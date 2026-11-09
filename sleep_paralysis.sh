@@ -68,12 +68,7 @@ while true; do
             echo ""
             read -p "Press Enter to continue..."
             ;;
-        5)
-            exit 0
-            ;;
-        *)
-            echo -e "${R}[!] Invalid choice.${N}"
-            sleep 1
-            ;;
+        5) exit 0 ;;
+        *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
     esac
 done

