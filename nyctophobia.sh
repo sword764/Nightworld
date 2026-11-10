@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ============================================
-#   NYCTOPHOBIA - Self Contained Module
-#   By Bogor X Ploit
-# ============================================
-
-# --- LIBRARY (Tanam Langsung) ---
 C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 bxp_encode_b64() { echo -n "$1" | base64 -w 0; }
@@ -23,7 +17,6 @@ ASCII
 }
 
 trap_ctrl_c() { echo -e "\n${R}[!] Listener stopped by user.${N}"; sleep 1; }
-# -------------------------------------------------
 
 while true; do
     bxp_ascii_title
@@ -83,8 +76,11 @@ while true; do
             echo -e "  ${G}[+] Starting Listener on port 2010...${N}"
             echo -e "  ${Y}[!] Waiting for sessions... (CTRL+C to stop)${N}"
             trap trap_ctrl_c SIGINT
-            if command -v nc >/dev/null 2>&1; then nc -lvnp 2010
-            elif command -v ncat >/dev/null 2>&1; then ncat -lvnp 2010; fi
+            
+            # --- 2>/dev/null nge-sembunyiin banner Nmap/Ncat ---
+            if command -v nc >/dev/null 2>&1; then nc -lvnp 2010 2>/dev/null
+            elif command -v ncat >/dev/null 2>&1; then ncat -lvnp 2010 2>/dev/null; fi
+            
             trap - SIGINT
             echo ""
             read -p "  Press Enter to continue..."

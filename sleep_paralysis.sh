@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ============================================
-#   SLEEP PARALYSIS - Self Contained Module
-#   By Bogor X Ploit
-# ============================================
-
-# --- LIBRARY (Tanam Langsung) ---
 C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 bxp_ascii_title() {
@@ -21,12 +15,11 @@ ASCII
 }
 
 trap_ctrl_c() { echo -e "\n${R}[!] Listener stopped by user.${N}"; sleep 1; }
-# -------------------------------------------------
 
 while true; do
     bxp_ascii_title
     
-    PUB_IP=$(curl -s https://api.ipify.org)
+    PUB_IP=$(curl -s https://api.ipify.org 2>/dev/null)
     
     echo -e "  ${Y}[*] C2 Node IP: ${W}${PUB_IP}${N}"
     echo -e "${C}  ==================================================${N}"
@@ -86,9 +79,16 @@ while true; do
             echo ""
             echo -e "  ${G}[+] Starting C2 Listener on port 2015...${N}"
             echo -e "  ${Y}[!] Awaiting incoming connections... (Press CTRL+C to stop)${N}"
+            
             trap trap_ctrl_c SIGINT
-            if command -v nc >/dev/null 2>&1; then nc -lvnp 2015
-            elif command -v ncat >/dev/null 2>&1; then ncat -lvnp 2015; fi
+            
+            # 2>/dev/null nge-sembunyiin pesan "Ncat: Version xxx (https://nmap.org)"
+            if command -v nc >/dev/null 2>&1; then 
+                nc -lvnp 2015 2>/dev/null
+            elif command -v ncat >/dev/null 2>&1; then 
+                ncat -lvnp 2015 2>/dev/null
+            fi
+            
             trap - SIGINT
             echo ""
             read -p "  Press Enter to continue..."

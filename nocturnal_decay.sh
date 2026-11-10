@@ -1,10 +1,4 @@
 #!/usr/bin/env bash
-# ============================================
-#   NOCTURNAL DECAY - Self Contained Module
-#   By Bogor X Ploit
-# ============================================
-
-# --- LIBRARY (Tanam Langsung) ---
 C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 bxp_ascii_title() {
@@ -19,7 +13,6 @@ bxp_ascii_title() {
 ASCII
     echo -e "${N}\n"; sleep 0.3
 }
-# -------------------------------------------------
 
 while true; do
     bxp_ascii_title
@@ -75,7 +68,8 @@ while true; do
 
             echo ""
             echo -e "  ${R}[!] Real extraction requires a vulnerable target.${N}"
-            echo -e "  ${Y}[*] Use tools like sqlmap for automated extraction.${N}"
+            # Hapus kata 'sqlmap', ganti pake istilah internal
+            echo -e "  ${Y}[*] Use internal extraction engine for automated dumping.${N}"
             echo ""
             read -p "  Press Enter to continue..."
             ;;
