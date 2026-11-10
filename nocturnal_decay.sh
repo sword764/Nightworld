@@ -22,9 +22,10 @@ while true; do
         1)
             echo -ne "${Y}Enter Target Endpoint > ${N}"
             read -r target_url
+            # Validasi URL kosong
             if [ -z "$target_url" ]; then
-                echo -e "${R}[!] Endpoint cannot be empty.${N}"
-                sleep 1
+                echo -e "${R}[!] Error: Endpoint cannot be empty.${N}"
+                sleep 1.5
                 continue
             fi
             
@@ -53,6 +54,15 @@ while true; do
             read -p "Press Enter to continue..."
             ;;
         2)
+            echo -ne "${Y}Enter Target Endpoint > ${N}"
+            read -r target_url
+            # Validasi URL kosong
+            if [ -z "$target_url" ]; then
+                echo -e "${R}[!] Error: Endpoint cannot be empty.${N}"
+                sleep 1.5
+                continue
+            fi
+
             echo -e "${R}[!] Real extraction requires a vulnerable target.${N}"
             echo -e "${Y}[*] Use tools like sqlmap for automated extraction.${N}"
             echo ""

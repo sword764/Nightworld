@@ -22,8 +22,21 @@ while true; do
         1)
             echo -ne "${Y}Enter Target URL > ${N}"
             read -r target
+            # Validasi Target URL
+            if [ -z "$target" ]; then
+                echo -e "${R}[!] Error: Target URL cannot be empty.${N}"
+                sleep 1.5
+                continue
+            fi
+
             echo -ne "${Y}Enter Callback IP > ${N}"
             read -r callback_url
+            # Validasi Callback IP
+            if [ -z "$callback_url" ]; then
+                echo -e "${R}[!] Error: Callback IP cannot be empty.${N}"
+                sleep 1.5
+                continue
+            fi
             
             echo -e "${G}[+] Initializing Session Hook...${N}"
             sleep 1
@@ -37,6 +50,13 @@ while true; do
         2)
             echo -ne "${Y}Enter Your C2 Receiver URL > ${N}"
             read -r c2_url
+            # Validasi C2 URL
+            if [ -z "$c2_url" ]; then
+                echo -e "${R}[!] Error: C2 Receiver URL cannot be empty.${N}"
+                sleep 1.5
+                continue
+            fi
+
             echo -e "${G}[+] Deploying Blind Vector...${N}"
             sleep 1
             

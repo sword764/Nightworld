@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 # ============================================
 #   N I G H T   W O R L D
+#   Version: 2.0 (Public)
+#   Engine : 5.0 (Device Responsive)
 #   By bogor x ploit
-#   V 2.0
 # ============================================
 
 VERSION="2.0"
 
-# --- GANTI URL INI PAKAI LINK CLOUDFLARE TUAN ---
-MODULE_URL="https://night-enough-caution-instrument.trycloudflare.com" 
-# ------------------------------------------------
+# --- GANTI URL INI PAKAI LINK CLOUDFLARE/NGROK TUAN ---
+MODULE_URL="https://LINK_CLOUDFLARE_TUAN_DISINI" 
+# ------------------------------------------------------
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
@@ -42,6 +43,58 @@ detect_env() {
     COLS="$(tput cols 2>/dev/null || echo 80)"
 }
 
+# ---------- ASCII PC (Keris) ----------
+ascii_pc() {
+    cat <<'ASCII'
+                    /\
+                   /   \
+                  /     \
+                 |       |
+                 |   ||  |
+                 |   ||  |
+                 |   ||  |
+                 |   ||  |
+                 |   ||  |
+                 |   ||  |
+                 |   ||  |
+    ____________|    ||    |____________
+   \          __     ||     __        /
+    \   .----'    \  ||  /   `----.  /
+     \/            \_||_/           \/
+                     ||
+                     ||
+         .---.-'     ||     '-.----.
+      .-'  /         ||         \     `-.
+    .'    /          ||          \      `.
+   /     /           ||           \      \
+  /     /            ||            \      \
+ ;     /         _..-||-.._         \     ;
+.     /       .'  .- || -.  `.       \     .
+|    /       /    /  ||  \    \       \    |
+|---/-------|----|---||----|---|-------\---|
+|  /         \    \  ||  /    /         \   |
+. /           `.   '-||-'   .'           \ .
+;              `.._  ||  _..'             ;
+ \                 ` || '                /
+  \  /\              ||              /\  /
+   `.  `-._          ||          _.-'  .'
+     `.    `'--._    ||    _..--'`    .'
+       `-.           ||           .-'
+          `---.      ||      .---'
+                \    ||    /
+                 \   ||   /
+                  \  ||  /
+                   \ || /
+                    \||/
+                     ||
+                     ||
+                     ||
+                     ||
+                     |/
+ASCII
+}
+
+# ---------- ASCII Mobile (Compact) ----------
 ascii_mobile() {
     cat <<'ASCII'
          /\
@@ -150,14 +203,12 @@ run_tool() {
         DOWNLOAD_URL="${MODULE_URL}/$FILE_NAME" 
         curl -s -o "$FILE_NAME" "$DOWNLOAD_URL"
         
-        # --- VALIDASI STRICT (Cek apakah file beneran bash script) ---
         if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
             echo -e "${R}[-] CRITICAL: Download failed or invalid script format!${N}"
             echo -e "${Y}[!] The server might have returned a 404 HTML page.${N}"
-            rm -f "$FILE_NAME" # Hapus file HTML sampah
+            rm -f "$FILE_NAME" 
             sleep 2; return
         fi
-
         echo -e "${G}[*] Verifying checksum (SHA-256)...${N}"; sleep 0.8
     fi
 
@@ -239,7 +290,17 @@ main() {
     detect_env
     while true; do
         clear
-        ascii_mobile
+        # Responsive ASCII (Berdasarkan Device)
+        if [ "$IS_TERMUX" -eq 1 ]; then
+            echo -e "${B}"
+            ascii_mobile
+            echo -e "${N}"
+        else
+            echo -e "${B}"
+            ascii_pc
+            echo -e "${N}"
+        fi
+        
         show_banner
         show_menu
         echo -ne "${Y}  Select menu > ${N}"
