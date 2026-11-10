@@ -2,7 +2,7 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 6.0 (Smart Installer & ASCII Sync)
+#   Engine : 6.0 (Smart Installer & UI Polish)
 #   By bogor x ploit
 # ============================================
 
@@ -139,34 +139,45 @@ show_banner() {
 
 show_menu() {
     echo -e "${G}  # MAIN MENU #${N}"
-    echo -e "${C}--------------------------------------------------${N}"
-    echo -e "  ${W}[1]${N} Cyber Kill Chain"
-    echo -e "  ${W}[2]${N} Exploitation"
-    echo -e "  ${W}[3]${N} Netscan"
-    echo -e "  ${W}[4]${N} User Guide"
-    echo -e "  ${W}[0]${N} Exit"
-    echo -e "${C}--------------------------------------------------${N}"
+    echo -e "${C}  ==================================================${N}"
+    echo ""
+    echo -e "  \033[1;36m[1]\033[0m  \033[1;37mCyber Kill Chain\033[0m"
+    echo ""
+    echo -e "  \033[1;36m[2]\033[0m  \033[1;37mExploitation\033[0m"
+    echo ""
+    echo -e "  \033[1;36m[3]\033[0m  \033[1;37mNetscan\033[0m"
+    echo ""
+    echo -e "  \033[1;36m[4]\033[0m  \033[1;37mUser Guide\033[0m"
+    echo ""
+    echo -e "  \033[1;31m[0]\033[0m  \033[1;37mExit\033[0m"
+    echo ""
+    echo -e "${C}  ==================================================${N}"
 }
 
+# --- Menu Lainnya (Ukuran & Spasi Disamain) ---
 menu_kill_chain() {
     while true; do
         clear
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${W}  TOOLS HUB ${C}|${W} Cyber Kill Chain${N}"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${G}  # CYBER MODULE #${N}"
-        echo -e "  ${W}[1]${N} Cyber Attack (API/Web)"
-        echo -e "  ${W}[2]${N} Phising (Credential Harvester)"
-        echo -e "  ${W}[3]${N} Back to Main Menu"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -ne "${Y}  Select menu > ${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo -e "${W}    TOOLS HUB ${C}|${W} Cyber Kill Chain${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo ""
+        echo -e "  \033[1;32m[1]\033[0m  \033[1;37mCyber Attack (API/Web)\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[2]\033[0m  \033[1;37mPhising (Credential Harvester)\033[0m"
+        echo ""
+        echo -e "  \033[1;31m[3]\033[0m  \033[1;37mBack to Main Menu\033[0m"
+        echo ""
+        echo -e "${C}  --------------------------------------------------${N}"
+        echo ""
+        echo -ne "  ${Y}Select menu > ${N}"
         read -r kc_choice
 
         case "$kc_choice" in
             1) run_tool "CYBER ATTACK" "cyber_attack.sh" ;;
             2) run_tool "PHISING" "phising.sh" ;;
             3) return ;;
-            *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
+            *) echo -e "  ${R}[!] Invalid choice.${N}"; sleep 1 ;;
         esac
     done
 }
@@ -174,17 +185,23 @@ menu_kill_chain() {
 menu_netscan() {
     while true; do
         clear
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${W}  TOOLS HUB ${C}|${W} Netscan (Wi-Fi)${N}"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${G}  # WI-FI ATTACK MODULE #${N}"
-        echo -e "  ${W}[1]${N} Exhume Disguise"
-        echo -e "  ${W}[2]${N} Choke The Hunters"
-        echo -e "  ${W}[3]${N} Reclaim Catch In Mid-Air"
-        echo -e "  ${W}[4]${N} Ouija Magnifying Glass"
-        echo -e "  ${W}[5]${N} Back to Main Menu"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -ne "${Y}  Select menu > ${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo -e "${W}    TOOLS HUB ${C}|${W} Netscan (Wi-Fi)${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo ""
+        echo -e "  \033[1;32m[1]\033[0m  \033[1;37mExhume Disguise\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[2]\033[0m  \033[1;37mChoke The Hunters\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[3]\033[0m  \033[1;37mReclaim Catch In Mid-Air\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[4]\033[0m  \033[1;37mOuija Magnifying Glass\033[0m"
+        echo ""
+        echo -e "  \033[1;31m[5]\033[0m  \033[1;37mBack to Main Menu\033[0m"
+        echo ""
+        echo -e "${C}  --------------------------------------------------${N}"
+        echo ""
+        echo -ne "  ${Y}Select menu > ${N}"
         read -r ns_choice
 
         case "$ns_choice" in
@@ -193,7 +210,7 @@ menu_netscan() {
             3) run_tool "RECLAIM CATCH" "reclaim_catch.sh" ;;
             4) run_tool "OUIJA MAGNIFYING" "ouija_magnifying.sh" ;;
             5) return ;;
-            *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
+            *) echo -e "  ${R}[!] Invalid choice.${N}"; sleep 1 ;;
         esac
     done
 }
@@ -201,16 +218,21 @@ menu_netscan() {
 menu_exploit() {
     while true; do
         clear
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${W}  TOOLS HUB ${C}|${W} Exploitation${N}"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -e "${G}  # EXPLOITATION MENU #${N}"
-        echo -e "  ${W}[1]${N} NYCTOPHOBIA"
-        echo -e "  ${W}[2]${N} SLEEP PARALYSIS"
-        echo -e "  ${W}[3]${N} NOCTURNAL DECAY"
-        echo -e "  ${W}[4]${N} Back to Main Menu"
-        echo -e "${C}--------------------------------------------------${N}"
-        echo -ne "${Y}  Select menu > ${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo -e "${W}    TOOLS HUB ${C}|${W} Exploitation${N}"
+        echo -e "${C}  ==================================================${N}"
+        echo ""
+        echo -e "  \033[1;32m[1]\033[0m  \033[1;37mNYCTOPHOBIA\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[2]\033[0m  \033[1;37mSLEEP PARALYSIS\033[0m"
+        echo ""
+        echo -e "  \033[1;32m[3]\033[0m  \033[1;37mNOCTURNAL DECAY\033[0m"
+        echo ""
+        echo -e "  \033[1;31m[4]\033[0m  \033[1;37mBack to Main Menu\033[0m"
+        echo ""
+        echo -e "${C}  --------------------------------------------------${N}"
+        echo ""
+        echo -ne "  ${Y}Select menu > ${N}"
         read -r sub_pilihan
 
         case "$sub_pilihan" in
@@ -218,60 +240,57 @@ menu_exploit() {
             2) run_tool "SLEEP PARALYSIS" "sleep_paralysis.sh" ;;
             3) run_tool "NOCTURNAL DECAY" "nocturnal_decay.sh" ;;
             4) return ;;
-            *) echo -e "${R}  Invalid choice.${N}"; sleep 1 ;;
+            *) echo -e "  ${R}[!] Invalid choice.${N}"; sleep 1 ;;
         esac
     done
 }
 
-# --- FUNGSI RUN TOOL (SMART DETECTOR) ---
+# --- FUNGSI RUN TOOL (SMART INSTALLER) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; MARKER_FILE=".${FILE_NAME}.installed"
     
     clear
     bxp_ascii_title "$TOOL_NAME"
-    echo -e "${C}--------------------------------------------------${N}"
+    echo -e "${C}  --------------------------------------------------${N}"
     
-    # LOGIKA UTAMA: Cek Penanda Install (Bukan cek file)
+    # Cek Marker
     if [ -f "$MARKER_FILE" ]; then
-        echo -e "${G}[+] Module $TOOL_NAME is already installed. Booting up...${N}"
+        echo -e "  ${G}[+] Module $TOOL_NAME is already installed. Booting up...${N}"
         sleep 1
     else
-        # Wajib tanya (Karena marker belum ada)
-        echo -ne "${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
+        echo -ne "  ${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
         read -r confirm
         
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-            echo -e "${R}[-] Installation aborted.${N}"; sleep 1.5; return
+            echo -e "  ${R}[-] Installation aborted.${N}"; sleep 1.5; return
         fi
 
-        # Kalo ternyata file belum ada, download
         if [ ! -f "$FILE_NAME" ]; then
             echo ""
-            echo -e "${G}[*] Downloading module from GitHub Server...${N}"
+            echo -e "  ${G}[*] Downloading module from GitHub Server...${N}"
             DOWNLOAD_URL="${MODULE_URL}/${FILE_NAME}" 
             curl -sL -o "$FILE_NAME" "$DOWNLOAD_URL"
             
             if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
-                echo -e "${R}[-] CRITICAL: Download failed or invalid format!${N}"
+                echo -e "  ${R}[-] CRITICAL: Download failed or invalid format!${N}"
                 rm -f "$FILE_NAME"; sleep 2; return
             fi
-            echo -e "${G}[*] Verifying checksum...${N}"; sleep 0.8
+            echo -e "  ${G}[*] Verifying checksum...${N}"; sleep 0.8
         fi
         
-        # Bikin penanda bahwa udah pernah install
         touch "$MARKER_FILE"
     fi
 
-    # Animasi Loading Install
+    # Animasi Loading
     echo ""
-    echo -ne "${Y}Installing... [${N}"
+    echo -ne "  ${Y}Installing... [${N}"
     for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
     echo -e "${Y}] 100%${N}"; echo ""
     
     # Boot Sequence
     clear
     bxp_ascii_title "$TOOL_NAME"
-    echo -e "${C}==================================================${N}"
+    echo -e "${C}  ==================================================${N}"
     
     BOOT_LOGS=()
     BOOT_LOGS+=(
@@ -314,44 +333,44 @@ run_tool() {
     fi
 
     for log in "${BOOT_LOGS[@]}"; do
-        echo -e "${W}  $log${N}"; sleep 0.3
+        echo -e "  ${W}$log${N}"; sleep 0.3
     done
     
-    echo -e "${C}==================================================${N}"
-    echo -e "${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
+    echo -e "${C}  ==================================================${N}"
+    echo -e "  ${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
     sleep 1.5
     clear
     chmod +x "$FILE_NAME"
     bash "$FILE_NAME"
     echo ""
-    read -p "Press Enter to return to menu..."
+    read -p "  Press Enter to return to menu..."
 }
 
 user_guide() {
     clear
-    echo -e "${C}==================================================${N}"
+    echo -e "${C}  ==================================================${N}"
     echo -e "${W}               USER GUIDE / MANUAL${N}"
     echo -e "${W}               NIGHT WORLD v2.0${N}"
-    echo -e "${C}==================================================${N}"
+    echo -e "${C}  ==================================================${N}"
     echo ""
-    echo -e "${Y}[1] INSTALLATION PROCESS${N}"
-    echo -e "  - Select a category (Cyber / Exploit / Netscan)."
-    echo -e "  - Choose the desired module."
-    echo -e "  - Type 'Y' when prompted to install (only required once)."
-    echo -e "  - Wait for the download and boot sequence to complete."
+    echo -e "  ${Y}[1] INSTALLATION PROCESS${N}"
+    echo -e "    - Select a category (Cyber / Exploit / Netscan)."
+    echo -e "    - Choose the desired module."
+    echo -e "    - Type 'Y' when prompted to install (only required once)."
+    echo -e "    - Wait for the download and boot sequence to complete."
     echo ""
-    echo -e "${Y}[2] USING THE LISTENERS${N}"
-    echo -e "  - For Session Hooks (NYCTOPHOBIA), the listener port is 2010."
-    echo -e "  - For Session Bridges (SLEEP PARALYSIS), the listener port is 2015."
-    echo -e "  - Ensure these ports are not used by other applications."
+    echo -e "  ${Y}[2] USING THE LISTENERS${N}"
+    echo -e "    - For Session Hooks (NYCTOPHOBIA), the listener port is 2010."
+    echo -e "    - For Session Bridges (SLEEP PARALYSIS), the listener port is 2015."
+    echo -e "    - Ensure these ports are not used by other applications."
     echo ""
-    echo -e "${Y}[3] TIPS & TRICKS${N}"
-    echo -e "  - Use a VPN/Proxy when conducting tests."
-    echo -e "  - Do not close the terminal while a listener is running."
-    echo -e "  - Press CTRL+C to stop the listener safely."
+    echo -e "  ${Y}[3] TIPS & TRICKS${N}"
+    echo -e "    - Use a VPN/Proxy when conducting tests."
+    echo -e "    - Do not close the terminal while a listener is running."
+    echo -e "    - Press CTRL+C to stop the listener safely."
     echo ""
-    echo -e "${C}--------------------------------------------------${N}"
-    read -p "Press Enter to return to main menu..."
+    echo -e "${C}  ==================================================${N}"
+    read -p "  Press Enter to return to main menu..."
 }
 
 main() {
@@ -362,7 +381,7 @@ main() {
         else echo -e "${B}"; ascii_pc; echo -e "${N}"; fi
         show_banner
         show_menu
-        echo -ne "${Y}  Select menu > ${N}"
+        echo -ne "  ${Y}Select menu > ${N}"
         read -r pilihan
 
         case "$pilihan" in
@@ -370,8 +389,8 @@ main() {
             2) menu_exploit ;;
             3) menu_netscan ;;
             4) user_guide ;;
-            0) echo -e "${G}  Exiting NIGHT WORLD...${N}"; exit 0 ;;
-            *) echo -e "${R}  Invalid choice.${N}"; sleep 1 ;;
+            0) echo -e "  ${G}Exiting NIGHT WORLD...${N}"; exit 0 ;;
+            *) echo -e "  ${R}[!] Invalid choice.${N}"; sleep 1 ;;
         esac
     done
 }
