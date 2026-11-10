@@ -2,17 +2,54 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 6.0 (Standalone GitHub Downloader)
+#   Engine : 6.0 (Standalone GitHub + Native ASCII)
 #   By bogor x ploit
 # ============================================
 
 VERSION="2.0"
-
 # --- LINK SERVER GITHUB RAW ---
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
-# ------------------------------
 
-source ./bxp_core.sh
+# --- NATIVE ASCII ENGINE (Ditanem Langsung di Sini) ---
+bxp_ascii_title() {
+    local title="$1"
+    if [ "$title" = "NYCTOPHOBIA" ]; then
+        echo -e "${C}"
+        cat <<'ASCII'
+ _   _ __   __ _____ _____ ___  _____  _   _  ____ _____ ___  
+| \ | |\ \ / /| ____|_   _/ _ \|  _ \| | | |/ __ \_   _/ _ \ 
+|  \| | \ V / |  _|   | || | | | |_) | |_| | |  | || || | | |
+| |\  |  | |  | |___  | || |_| |  __/|  _  | |__| || || |_| |
+|_| \_|  |_|  |_____| |_| \___/|_|   |_| |_|\____/|_| \___/ 
+ASCII
+        echo -e "${N}"
+    elif [ "$title" = "SLEEP PARALYSIS" ]; then
+        echo -e "${R}"
+        cat <<'ASCII'
+ ____  _     _____ _____ ____    ____   _    ____  _     __   ___   __ _____ 
+/ ___|| |   | ____| ____|  _ \  |  _ \ / \  |  _ \| |    \ \ / / | | |_   _|
+\___ \| |   |  _| |  _| | |_) | | |_) / _ \ | |_) | |     \ V /| | | | | |  
+ ___) | |___| |___| |___|  __/  |  __/ ___ \|  _ <| |___   | | | |_| | | |  
+|____/|_____|_____|_____|_|     |_| /_/   \_\_| \_\_____|  |_|  \___/  |_|  
+ASCII
+        echo -e "${N}"
+    elif [ "$title" = "NOCTURNAL DECAY" ]; then
+        echo -e "${Y}"
+        cat <<'ASCII'
+ _   _  ___   ____ _______ _   _ ____  _        ____  _____ ____   _    __   __
+| \ | |/ _ \ / ___|__   __| | | |  _ \| |      |  _ \| ____/ ___| / \   \ \ / /
+|  \| | | | | |      | |  | | | | |_) | |      | | | |  _|| |    / _ \   \ V / 
+| |\  | |_| | |___   | |  | |_| |  _ <| |___   | |_| | |__| |___/ ___ \   | |  
+|_| \_|\___/ \____|  |_|   \___/|_| \_\_____|  |____/|_____\____/_/   \_\  |_|  
+ASCII
+        echo -e "${N}"
+    fi
+}
+
+# --- Cek Library & Load (Kalo ga ada / error, pake yang di atas) ---
+if [ -f "bxp_core.sh" ]; then
+    source ./bxp_core.sh
+fi
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
