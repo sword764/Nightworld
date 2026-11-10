@@ -4,7 +4,7 @@
 #   By Bogor X Ploit
 # ============================================
 
-# --- LIBRARY (Tanam Langsung) ---
+# --- LIBRARY (Tanam Langsung, Ga Perlu File Luar) ---
 C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 bxp_encode_b64() { echo -n "$1" | base64 -w 0; }
@@ -26,11 +26,14 @@ trap_ctrl_c() { echo -e "\n${R}[!] Listener stopped by user.${N}"; sleep 1; }
 # -------------------------------------------------
 
 while true; do
+    # Panggil ASCII Gede
     bxp_ascii_title
     
     echo -e "${C}  ==================================================${N}"
     echo -e "${C}  --------------------------------------------------${N}"
     echo ""
+
+    # Menu Lega & Tebal
     echo -e "  \033[1;32m[1]\033[0m  \033[1;37mInitiate Basic Session Hook\033[0m"
     echo ""
     echo -e "  \033[1;32m[2]\033[0m  \033[1;37mDeploy Blind Session Vector\033[0m"
@@ -39,6 +42,7 @@ while true; do
     echo ""
     echo -e "  \033[1;31m[4]\033[0m  \033[1;37mBack to Main Menu\033[0m"
     echo ""
+
     echo -e "${C}  --------------------------------------------------${N}"
     echo ""
     echo -ne "  ${Y}Select option > ${N}"
