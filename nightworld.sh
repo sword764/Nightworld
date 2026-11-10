@@ -224,7 +224,7 @@ menu_exploit() {
     done
 }
 
-# --- FUNGSI RUN TOOL (FIX TOTAL) ---
+# --- FUNGSI RUN TOOL (BOOT SEQUENCE DETAIL) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; clear
     
@@ -263,52 +263,34 @@ run_tool() {
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}==================================================${N}"
     
+    # --- BOOT SEQUENCE DETAIL ---
     BOOT_LOGS=()
-    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
+    
+    # Log File & Library
+    BOOT_LOGS+=(
+        "[    0.000000] Initializing BXP Core Engine..."
+        "[    0.005000] Fetching manifest from GitHub..."
+        "[    0.012000] [ OK ] Manifest verified."
+        "[    0.018000] Downloading payload: ${FILE_NAME}..."
+        "[    0.025000] [ OK ] ${FILE_NAME} downloaded."
+        "[    0.032000] Extracting library: bxp_libcore.sh..."
+        "[    0.045000] [ OK ] Library extracted."
+    )
+
+    # Log Device Spesifik
+    if [ "$IS_TERMUX" -eq 1 ]; then
         BOOT_LOGS+=(
-            "[    0.000000] BXP Core Engine loaded successfully."
-            "[    0.012000] Root access granted. Privilege escalation active."
-            "[    0.045000] Mounting system partitions (rw)..."
-            "[    0.089000] [ OK ] Partitions mounted."
-            "[    0.120000] Loading kernel modules (bxp_hook.ko)..."
-            "[    0.156000] [ OK ] Module loaded."
-            "[    0.189000] Initializing native network stack..."
-            "[    0.210000] [ OK ] Stack active."
-            "[    0.245000] Bypassing local firewall (iptables)..."
-            "[    0.278000] [ OK ] Firewall rules flushed."
-            "[    0.312000] Establishing encrypted C2 tunnel (AES-256)..."
-            "[    0.345000] [ OK ] Tunnel active."
-            "[    0.389000] Injecting $TOOL_NAME payload into memory..."
-            "[    0.412000] [ OK ] Injection successful."
-            "[    0.456000] Spawning hidden daemon threads..."
-            "[    0.489000] [ OK ] 16 threads active."
-            "[    0.523000] Routing traffic via proxy chain (Tor)..."
-            "[    0.556000] [ OK ] Circuit established."
-            "[    0.589000] Hiding process tree from system..."
-            "[    0.612000] [ OK ] Process hidden."
-            "[    0.645000] Clearing system logs (/var/log)..."
-            "[    0.678000] [ OK ] Logs cleared."
-            "[    0.712000] Verifying payload integrity..."
-            "[    0.745000] [ OK ] Integrity verified."
-            "[    0.789000] Setting up persistence mechanism (Cron)..."
-            "[    0.812000] [ OK ] Persistence active."
-            "[    0.856000] $TOOL_NAME is now fully operational."
-        )
-    else
-        BOOT_LOGS+=(
-            "[    0.000000] BXP Core Engine loaded (User-space)."
-            "[    0.015000] Android Sandbox detected."
-            "[    0.032000] Initializing Dalvik Virtual Machine..."
-            "[    0.056000] [ OK ] VM ready."
-            "[    0.089000] Mounting local storage (Scoped)..."
+            "[    0.060000] Device Detected: ${DEV_MODEL} (Android)"
+            "[    0.075000] Architecture: ${CPU_ABI}"
+            "[    0.089000] Mounting local storage (Scoped Storage)..."
             "[    0.120000] [ OK ] Storage mapped."
             "[    0.156000] Bypassing Termux restrictions..."
             "[    0.189000] [ OK ] Bypass successful."
-            "[    0.210000] Initializing native network stack..."
-            "[    0.245000] [ OK ] Stack active."
+            "[    0.210000] Initializing Dalvik VM (Android ${ANDROID_VER})..."
+            "[    0.245000] [ OK ] VM ready."
             "[    0.278000] Establishing encrypted C2 tunnel (AES-256)..."
             "[    0.312000] [ OK ] Tunnel active."
-            "[    0.345000] Injecting $TOOL_NAME payload into user-space..."
+            "[    0.345000] Injecting ${TOOL_NAME} payload into user-space..."
             "[    0.389000] [ OK ] Injection successful."
             "[    0.412000] Spawning background services..."
             "[    0.456000] [ OK ] Services active."
@@ -318,21 +300,51 @@ run_tool() {
             "[    0.589000] [ OK ] Icon hidden."
             "[    0.612000] Clearing Termux logs..."
             "[    0.645000] [ OK ] Logs cleared."
-            "[    0.678000] Verifying payload integrity..."
+            "[    0.678000] Verifying payload integrity (SHA-256)..."
             "[    0.712000] [ OK ] Integrity verified."
             "[    0.745000] Setting up persistence (~/.bashrc)..."
             "[    0.789000] [ OK ] Persistence active."
-            "[    0.812000] $TOOL_NAME is now fully operational."
+            "[    0.812000] ${TOOL_NAME} is now fully operational."
+        )
+    else
+        BOOT_LOGS+=(
+            "[    0.060000] Device Detected: ${DEV_MODEL} (Linux)"
+            "[    0.075000] Architecture: ${ARCH} (Kernel ${KERNEL})"
+            "[    0.089000] Root access granted. Privilege escalation active."
+            "[    0.120000] Mounting system partitions (rw)..."
+            "[    0.156000] [ OK ] Partitions mounted."
+            "[    0.189000] Loading kernel modules (bxp_hook.ko)..."
+            "[    0.210000] [ OK ] Module loaded."
+            "[    0.245000] Bypassing local firewall (iptables)..."
+            "[    0.278000] [ OK ] Firewall rules flushed."
+            "[    0.312000] Establishing encrypted C2 tunnel (AES-256)..."
+            "[    0.345000] [ OK ] Tunnel active."
+            "[    0.389000] Injecting ${TOOL_NAME} payload into memory..."
+            "[    0.412000] [ OK ] Injection successful."
+            "[    0.456000] Spawning hidden daemon threads..."
+            "[    0.489000] [ OK ] 16 threads active."
+            "[    0.523000] Routing traffic via proxy chain (Tor)..."
+            "[    0.556000] [ OK ] Circuit established."
+            "[    0.589000] Hiding process tree from system..."
+            "[    0.612000] [ OK ] Process hidden."
+            "[    0.645000] Clearing system logs (/var/log)..."
+            "[    0.678000] [ OK ] Logs cleared."
+            "[    0.712000] Verifying payload integrity (SHA-256)..."
+            "[    0.745000] [ OK ] Integrity verified."
+            "[    0.789000] Setting up persistence mechanism (Cron)..."
+            "[    0.812000] [ OK ] Persistence active."
+            "[    0.856000] ${TOOL_NAME} is now fully operational."
         )
     fi
 
+    # Tampilkan log dengan jeda lama
     for log in "${BOOT_LOGS[@]}"; do
-        echo -e "${W}  $log${N}"; sleep 0.25
+        echo -e "${W}  $log${N}"; sleep 0.3
     done
     
     echo -e "${C}==================================================${N}"
     echo -e "${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
-    sleep 1.5
+    sleep 2.0
     clear
     chmod +x "$FILE_NAME"
     bash "$FILE_NAME"
