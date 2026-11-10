@@ -7,19 +7,16 @@
 # ============================================
 
 VERSION="2.0"
-
-# --- LINK SERVER GITHUB RAW (GANTI KALO PERLU) ---
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
 
-# --- AUTO-SYNC LIBRARY ---
-if [ ! -f "bxp_core.sh" ]; then
+# --- AUTO-SYNC LIBRARY (SESUAIIN NAMA FILE) ---
+if [ ! -f "bxp_libcore.sh" ]; then
     echo -e "\033[1;33m[*] Core library not found. Downloading from GitHub...\033[0m"
-    curl -sL -o bxp_core.sh "${MODULE_URL}/bxp_core.sh"
+    curl -sL -o bxp_libcore.sh "${MODULE_URL}/bxp_libcore.sh"
 fi
+source ./bxp_libcore.sh
 
-source ./bxp_core.sh
-
-# Fallback ASCII (Kalo library error)
+# Fallback kalo library gagal
 if ! command -v bxp_ascii_title >/dev/null 2>&1; then
     bxp_ascii_title() { echo -e "${C}=== $1 ===${N}\n"; }
 fi
@@ -152,7 +149,6 @@ show_menu() {
     echo -e "${C}--------------------------------------------------${N}"
 }
 
-# --- Menu Cyber Kill Chain (Menu 1) ---
 menu_kill_chain() {
     while true; do
         clear
@@ -176,7 +172,6 @@ menu_kill_chain() {
     done
 }
 
-# --- Menu Netscan (Menu 3) ---
 menu_netscan() {
     while true; do
         clear
@@ -204,7 +199,6 @@ menu_netscan() {
     done
 }
 
-# --- Menu Exploitation (Menu 2) ---
 menu_exploit() {
     while true; do
         clear
@@ -230,11 +224,10 @@ menu_exploit() {
     done
 }
 
-# --- Fungsi Run Tool (1x Install & Super Long Boot) ---
+# --- FUNGSI RUN TOOL (FIX TOTAL) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; clear
     
-    # Cek cache
     if [ -f "$FILE_NAME" ]; then
         echo -e "${G}[+] Module $TOOL_NAME already installed. Booting up...${N}"
         sleep 1
@@ -261,7 +254,6 @@ run_tool() {
         echo -e "${G}[*] Verifying checksum...${N}"; sleep 0.8
     fi
 
-    # Animasi Loading
     echo ""
     echo -ne "${Y}Installing... [${N}"
     for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
@@ -271,7 +263,6 @@ run_tool() {
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}==================================================${N}"
     
-    # Boot Sequence (Root/Non-Root)
     BOOT_LOGS=()
     if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
         BOOT_LOGS+=(
@@ -349,7 +340,6 @@ run_tool() {
     read -p "Press Enter to return to menu..."
 }
 
-# --- User Guide (Menu 4) ---
 user_guide() {
     clear
     echo -e "${C}==================================================${N}"
@@ -377,7 +367,6 @@ user_guide() {
     read -p "Press Enter to return to main menu..."
 }
 
-# --- Main Logic ---
 main() {
     detect_env
     while true; do

