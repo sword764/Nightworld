@@ -2,14 +2,16 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 6.0 (Smart Installer & Full Log)
+#   Engine : 6.0 (Smart Installer & ASCII Sync)
 #   By bogor x ploit
 # ============================================
 
 VERSION="2.0"
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
 
+# --- AUTO-SYNC LIBRARY ---
 if [ ! -f "bxp_libcore.sh" ]; then
+    echo -e "\033[1;33m[*] Core library not found. Downloading from GitHub...\033[0m"
     curl -sL -o bxp_libcore.sh "${MODULE_URL}/bxp_libcore.sh"
 fi
 source ./bxp_libcore.sh
@@ -221,7 +223,7 @@ menu_exploit() {
     done
 }
 
-# --- FUNGSI RUN TOOL (FULL LOG & SMART INSTALLER) ---
+# --- FUNGSI RUN TOOL (SMART DETECTOR) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; MARKER_FILE=".${FILE_NAME}.installed"
     
@@ -229,10 +231,12 @@ run_tool() {
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}--------------------------------------------------${N}"
     
-    if [ -f "$MARKER_FILE" ] && [ -f "$FILE_NAME" ]; then
-        echo -e "${G}[+] Module already installed. Booting up...${N}"
+    # LOGIKA UTAMA: Cek Penanda Install (Bukan cek file)
+    if [ -f "$MARKER_FILE" ]; then
+        echo -e "${G}[+] Module $TOOL_NAME is already installed. Booting up...${N}"
         sleep 1
     else
+        # Wajib tanya (Karena marker belum ada)
         echo -ne "${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
         read -r confirm
         
@@ -240,6 +244,7 @@ run_tool() {
             echo -e "${R}[-] Installation aborted.${N}"; sleep 1.5; return
         fi
 
+        # Kalo ternyata file belum ada, download
         if [ ! -f "$FILE_NAME" ]; then
             echo ""
             echo -e "${G}[*] Downloading module from GitHub Server...${N}"
@@ -253,90 +258,68 @@ run_tool() {
             echo -e "${G}[*] Verifying checksum...${N}"; sleep 0.8
         fi
         
+        # Bikin penanda bahwa udah pernah install
         touch "$MARKER_FILE"
     fi
 
+    # Animasi Loading Install
     echo ""
     echo -ne "${Y}Installing... [${N}"
     for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
     echo -e "${Y}] 100%${N}"; echo ""
     
+    # Boot Sequence
     clear
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}==================================================${N}"
     
-    # LOG PANJANG (Beda Root/Non-Root, Jeda 0.3 detik)
     BOOT_LOGS=()
-    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
+    BOOT_LOGS+=(
+        "[    0.000000] Initializing BXP Core Engine..."
+        "[    0.005000] Fetching manifest from GitHub..."
+        "[    0.012000] [ OK ] Manifest verified."
+        "[    0.018000] Loading payload: ${FILE_NAME}..."
+        "[    0.025000] [ OK ] ${FILE_NAME} loaded."
+        "[    0.032000] Extracting library: bxp_libcore.sh..."
+        "[    0.045000] [ OK ] Library extracted."
+    )
+
+    if [ "$IS_TERMUX" -eq 1 ]; then
         BOOT_LOGS+=(
-            "[    0.000000] BXP Core Engine loaded successfully."
-            "[    0.012000] Root access granted. Privilege escalation active."
-            "[    0.045000] Mounting system partitions (rw)..."
-            "[    0.089000] [ OK ] Partitions mounted."
-            "[    0.120000] Loading kernel modules (bxp_hook.ko)..."
-            "[    0.156000] [ OK ] Module loaded."
-            "[    0.189000] Initializing native network stack..."
-            "[    0.210000] [ OK ] Stack active."
-            "[    0.245000] Bypassing local firewall (iptables)..."
-            "[    0.278000] [ OK ] Firewall rules flushed."
-            "[    0.312000] Establishing encrypted C2 tunnel (AES-256)..."
-            "[    0.345000] [ OK ] Tunnel active."
-            "[    0.389000] Injecting $TOOL_NAME payload into memory..."
-            "[    0.412000] [ OK ] Injection successful."
-            "[    0.456000] Spawning hidden daemon threads..."
-            "[    0.489000] [ OK ] 16 threads active."
-            "[    0.523000] Routing traffic via proxy chain (Tor)..."
-            "[    0.556000] [ OK ] Circuit established."
-            "[    0.589000] Hiding process tree from system..."
-            "[    0.612000] [ OK ] Process hidden."
-            "[    0.645000] Clearing system logs (/var/log)..."
-            "[    0.678000] [ OK ] Logs cleared."
-            "[    0.712000] Verifying payload integrity (SHA-256)..."
-            "[    0.745000] [ OK ] Integrity verified."
-            "[    0.789000] Setting up persistence mechanism (Cron)..."
-            "[    0.812000] [ OK ] Persistence active."
-            "[    0.856000] $TOOL_NAME is now fully operational."
-        )
-    else
-        BOOT_LOGS+=(
-            "[    0.000000] BXP Core Engine loaded (User-space)."
-            "[    0.015000] Android Sandbox detected."
-            "[    0.032000] Initializing Dalvik Virtual Machine..."
-            "[    0.056000] [ OK ] VM ready."
-            "[    0.089000] Mounting local storage (Scoped Storage)..."
+            "[    0.060000] Device Detected: ${DEV_MODEL} (Android)"
+            "[    0.089000] Mounting local storage..."
             "[    0.120000] [ OK ] Storage mapped."
             "[    0.156000] Bypassing Termux restrictions..."
             "[    0.189000] [ OK ] Bypass successful."
-            "[    0.210000] Initializing native network stack..."
-            "[    0.245000] [ OK ] Stack active."
-            "[    0.278000] Establishing encrypted C2 tunnel (AES-256)..."
+            "[    0.278000] Establishing encrypted C2 tunnel..."
             "[    0.312000] [ OK ] Tunnel active."
-            "[    0.345000] Injecting $TOOL_NAME payload into user-space..."
+            "[    0.345000] Injecting ${TOOL_NAME} payload..."
             "[    0.389000] [ OK ] Injection successful."
-            "[    0.412000] Spawning background services..."
-            "[    0.456000] [ OK ] Services active."
-            "[    0.489000] Routing traffic via proxy chain (Tor)..."
-            "[    0.523000] [ OK ] Circuit established."
             "[    0.556000] Hiding app icon from launcher..."
             "[    0.589000] [ OK ] Icon hidden."
-            "[    0.612000] Clearing Termux logs..."
-            "[    0.645000] [ OK ] Logs cleared."
-            "[    0.678000] Verifying payload integrity (SHA-256)..."
-            "[    0.712000] [ OK ] Integrity verified."
-            "[    0.745000] Setting up persistence (~/.bashrc)..."
-            "[    0.789000] [ OK ] Persistence active."
-            "[    0.812000] $TOOL_NAME is now fully operational."
+            "[    0.812000] ${TOOL_NAME} is now fully operational."
+        )
+    else
+        BOOT_LOGS+=(
+            "[    0.060000] Device Detected: ${DEV_MODEL} (Linux)"
+            "[    0.089000] Root access granted."
+            "[    0.120000] Mounting system partitions..."
+            "[    0.156000] [ OK ] Partitions mounted."
+            "[    0.278000] Bypassing local firewall..."
+            "[    0.312000] [ OK ] Firewall flushed."
+            "[    0.345000] Injecting ${TOOL_NAME} payload..."
+            "[    0.389000] [ OK ] Injection successful."
+            "[    0.812000] ${TOOL_NAME} is now fully operational."
         )
     fi
 
-    # Tampilkan dengan jeda 0.3 (lebih lama)
     for log in "${BOOT_LOGS[@]}"; do
         echo -e "${W}  $log${N}"; sleep 0.3
     done
     
     echo -e "${C}==================================================${N}"
     echo -e "${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
-    sleep 2.0
+    sleep 1.5
     clear
     chmod +x "$FILE_NAME"
     bash "$FILE_NAME"

