@@ -1,17 +1,39 @@
 #!/usr/bin/env bash
-source ./bxp_core.sh
+# ============================================
+#   NYCTOPHOBIA - Self Contained Module
+#   By Bogor X Ploit
+# ============================================
+
+# --- LIBRARY (Tanam Langsung) ---
+C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
+
+bxp_ascii_title() {
+    clear; sleep 0.3
+    echo -e "${C}"
+    cat <<'ASCII'
+ _   _  __   __  ____  _____  ___   ____   _   _   ___   ____  ___   _    
+| \ | | \ \ / / / ___||_   _|/ _ \ |  _ \ | | | | / _ \ | __ )|_ _| / \   
+|  \| |  \ V / | |      | | | | | || |_) || |_| || | | ||  _ \ | | / _ \  
+| |\  |   | |  | |___   | | | |_| ||  __/ |  _  || |_| || |_) || ||  _  | 
+|_| \_|   |_|   \____|  |_|  \___/ |_|    |_| |_| \___/ |____/|___|_| |_| 
+ASCII
+    echo -e "${N}\n"; sleep 0.3
+}
+
+bxp_encode_b64() { echo -n "$1" | base64 -w 0; }
 
 trap_ctrl_c() { echo -e "\n${R}[!] Listener stopped by user.${N}"; sleep 1; }
+# -------------------------------------------------
 
 while true; do
-    # Panggil ASCII Header (Gantiin teks biasa yang dilingkarin)
-    bxp_ascii_title "NYCTOPHOBIA"
+    # Panggil ASCII Header (Gantiin teks biasa)
+    bxp_ascii_title
     
     echo -e "${C}  ==================================================${N}"
     echo -e "${C}  --------------------------------------------------${N}"
     echo ""
 
-    # Menu Dikasih Jarak & Teks Tebal
+    # Menu Lega & Tebal
     echo -e "  \033[1;32m[1]\033[0m  \033[1;37mInitiate Basic Session Hook\033[0m"
     echo ""
     echo -e "  \033[1;32m[2]\033[0m  \033[1;37mDeploy Blind Session Vector\033[0m"
