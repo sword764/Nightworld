@@ -4,25 +4,18 @@
 #   By Bogor X Ploit
 # ============================================
 
-# --- LIBRARY (Tanam Langsung) ---
-C='\033[0;36m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
+# --- PANGGIL LIBRARY (BIAR ASCII-NYA SAMA) ---
+if [ -f "bxp_libcore.sh" ]; then
+    source ./bxp_libcore.sh
+fi
 
-bxp_ascii_title() {
-    clear; sleep 0.3
-    echo -e "${C}"
-    cat <<'ASCII'
-  ____  __   __  ____  _____  ____       _     _____  _____  ____  _  __
- / ___| \ \ / / | __ )| ____||  _ \     / \   |_   _||_   _||  _ \| |/ /
-| |      \ V /  |  _ \|  _|  | |_) |   / _ \    | |    | |  | |_) | ' / 
-| |___    | |   | |_) | |___ |  _ <   / ___ \   | |    | |  |  _ <| . \ 
- \____|   |_|   |____/|_____||_| \_\ /_/   \_\  |_|    |_|  |_| \_\_|\_\
-ASCII
-    echo -e "${N}\n"; sleep 0.3
-}
-# -------------------------------------------------
+# Fallback kalo library gagal
+if ! command -v bxp_ascii_title >/dev/null 2>&1; then
+    bxp_ascii_title() { echo -e "${C}=== $1 ===${N}\n"; }
+fi
 
 while true; do
-    bxp_ascii_title
+    bxp_ascii_title "CYBER ATTACK"
     
     echo -e "${C}  ==================================================${N}"
     echo -e "${W}    CYBER ATTACK ENGINE ${C}|${W} By Bogor X Ploit${N}"
