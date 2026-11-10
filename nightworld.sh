@@ -2,53 +2,26 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 6.0 (Standalone GitHub + Native ASCII)
+#   Engine : 6.0 (Standalone GitHub Downloader)
 #   By bogor x ploit
 # ============================================
 
 VERSION="2.0"
-# --- LINK SERVER GITHUB RAW ---
+
+# --- LINK SERVER GITHUB RAW (GANTI KALO PERLU) ---
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
 
-# --- NATIVE ASCII ENGINE (Ditanem Langsung di Sini) ---
-bxp_ascii_title() {
-    local title="$1"
-    if [ "$title" = "NYCTOPHOBIA" ]; then
-        echo -e "${C}"
-        cat <<'ASCII'
- _   _ __   __ _____ _____ ___  _____  _   _  ____ _____ ___  
-| \ | |\ \ / /| ____|_   _/ _ \|  _ \| | | |/ __ \_   _/ _ \ 
-|  \| | \ V / |  _|   | || | | | |_) | |_| | |  | || || | | |
-| |\  |  | |  | |___  | || |_| |  __/|  _  | |__| || || |_| |
-|_| \_|  |_|  |_____| |_| \___/|_|   |_| |_|\____/|_| \___/ 
-ASCII
-        echo -e "${N}"
-    elif [ "$title" = "SLEEP PARALYSIS" ]; then
-        echo -e "${R}"
-        cat <<'ASCII'
- ____  _     _____ _____ ____    ____   _    ____  _     __   ___   __ _____ 
-/ ___|| |   | ____| ____|  _ \  |  _ \ / \  |  _ \| |    \ \ / / | | |_   _|
-\___ \| |   |  _| |  _| | |_) | | |_) / _ \ | |_) | |     \ V /| | | | | |  
- ___) | |___| |___| |___|  __/  |  __/ ___ \|  _ <| |___   | | | |_| | | |  
-|____/|_____|_____|_____|_|     |_| /_/   \_\_| \_\_____|  |_|  \___/  |_|  
-ASCII
-        echo -e "${N}"
-    elif [ "$title" = "NOCTURNAL DECAY" ]; then
-        echo -e "${Y}"
-        cat <<'ASCII'
- _   _  ___   ____ _______ _   _ ____  _        ____  _____ ____   _    __   __
-| \ | |/ _ \ / ___|__   __| | | |  _ \| |      |  _ \| ____/ ___| / \   \ \ / /
-|  \| | | | | |      | |  | | | | |_) | |      | | | |  _|| |    / _ \   \ V / 
-| |\  | |_| | |___   | |  | |_| |  _ <| |___   | |_| | |__| |___/ ___ \   | |  
-|_| \_|\___/ \____|  |_|   \___/|_| \_\_____|  |____/|_____\____/_/   \_\  |_|  
-ASCII
-        echo -e "${N}"
-    fi
-}
+# --- AUTO-SYNC LIBRARY ---
+if [ ! -f "bxp_core.sh" ]; then
+    echo -e "\033[1;33m[*] Core library not found. Downloading from GitHub...\033[0m"
+    curl -sL -o bxp_core.sh "${MODULE_URL}/bxp_core.sh"
+fi
 
-# --- Cek Library & Load (Kalo ga ada / error, pake yang di atas) ---
-if [ -f "bxp_core.sh" ]; then
-    source ./bxp_core.sh
+source ./bxp_core.sh
+
+# Fallback ASCII (Kalo library error)
+if ! command -v bxp_ascii_title >/dev/null 2>&1; then
+    bxp_ascii_title() { echo -e "${C}=== $1 ===${N}\n"; }
 fi
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
@@ -82,7 +55,7 @@ detect_env() {
     COLS="$(tput cols 2>/dev/null || echo 80)"
 }
 
-# --- ASCII & Banner ---
+# --- ASCII MAIN HEADER ---
 ascii_mobile() { cat <<'ASCII'
          /\
         /  \
@@ -261,19 +234,18 @@ menu_exploit() {
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; clear
     
-    # Cek apakah udah ke-install (File ada)
+    # Cek cache
     if [ -f "$FILE_NAME" ]; then
         echo -e "${G}[+] Module $TOOL_NAME already installed. Booting up...${N}"
         sleep 1
     else
-        # Kalau belum ada, tanya install
         bxp_ascii_title "$TOOL_NAME"
         echo -e "${C}--------------------------------------------------${N}"
         echo -ne "${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
         read -r confirm
         
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
-            echo -e "${R}[-] Installation aborted. Returning to menu.${N}"; sleep 1.5; return
+            echo -e "${R}[-] Installation aborted.${N}"; sleep 1.5; return
         fi
 
         echo ""
@@ -281,16 +253,15 @@ run_tool() {
         DOWNLOAD_URL="${MODULE_URL}/${FILE_NAME}" 
         curl -sL -o "$FILE_NAME" "$DOWNLOAD_URL"
         
-        # Validasi ketat
         if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
-            echo -e "${R}[-] CRITICAL: Download failed or invalid script format!${N}"
+            echo -e "${R}[-] CRITICAL: Download failed or invalid format!${N}"
             echo -e "${Y}[!] Pastikan file $FILE_NAME ada di repository GitHub Tuan.${N}"
             rm -f "$FILE_NAME"; sleep 2; return
         fi
-        echo -e "${G}[*] Verifying checksum (SHA-256)...${N}"; sleep 0.8
+        echo -e "${G}[*] Verifying checksum...${N}"; sleep 0.8
     fi
 
-    # Animasi Loading Install
+    # Animasi Loading
     echo ""
     echo -ne "${Y}Installing... [${N}"
     for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
@@ -300,7 +271,7 @@ run_tool() {
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}==================================================${N}"
     
-    # --- BOOT SEQUENCE BERDASARKAN ROOT / NON ROOT ---
+    # Boot Sequence (Root/Non-Root)
     BOOT_LOGS=()
     if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
         BOOT_LOGS+=(
@@ -364,7 +335,6 @@ run_tool() {
         )
     fi
 
-    # Jeda lebih lama biar dramatis
     for log in "${BOOT_LOGS[@]}"; do
         echo -e "${W}  $log${N}"; sleep 0.25
     done
@@ -379,7 +349,7 @@ run_tool() {
     read -p "Press Enter to return to menu..."
 }
 
-# --- User Guide (English & Stealth) ---
+# --- User Guide (Menu 4) ---
 user_guide() {
     clear
     echo -e "${C}==================================================${N}"
