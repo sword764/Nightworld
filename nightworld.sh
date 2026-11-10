@@ -2,12 +2,16 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 5.0 (Stealth Installer & ASCII)
+#   Engine : 6.0 (Standalone GitHub Downloader)
 #   By bogor x ploit
 # ============================================
 
 VERSION="2.0"
-MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"" # <--- GANTI INI
+
+# --- LINK SERVER GITHUB RAW ---
+MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
+# ------------------------------
+
 source ./bxp_core.sh
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
@@ -41,7 +45,7 @@ detect_env() {
     COLS="$(tput cols 2>/dev/null || echo 80)"
 }
 
-# --- ASCII Header (Kecil) ---
+# --- ASCII & Banner ---
 ascii_mobile() { cat <<'ASCII'
          /\
         /  \
@@ -50,9 +54,9 @@ ascii_mobile() { cat <<'ASCII'
        | || |
        | || |
     ___|_||_|___
-   \    ||     /
-    \   ||    /
-     \__||__ /
+   \   ||     /
+    \  ||    /
+     \_||__ /
         ||
         ||
      .--||--.
@@ -63,10 +67,10 @@ ascii_mobile() { cat <<'ASCII'
    |\  _||_  /|
     \  '||'  /
      '. || .'
-        ||
-        ||
-        ||
-        |/
+       ||
+       ||
+       ||
+       |/
    NIGHT WORLD
  By bogor x ploit
       v2.0
@@ -236,11 +240,14 @@ run_tool() {
         fi
 
         echo ""
-        echo -e "${G}[*] Downloading module from C2 server...${N}"
-        DOWNLOAD_URL="${MODULE_URL}/$FILE_NAME" 
-        curl -s -o "$FILE_NAME" "$DOWNLOAD_URL"
+        echo -e "${G}[*] Downloading module from GitHub Server...${N}"
+        DOWNLOAD_URL="${MODULE_URL}/${FILE_NAME}" 
+        curl -sL -o "$FILE_NAME" "$DOWNLOAD_URL"
+        
+        # Validasi ketat
         if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
             echo -e "${R}[-] CRITICAL: Download failed or invalid script format!${N}"
+            echo -e "${Y}[!] Pastikan file $FILE_NAME ada di repository GitHub Tuan.${N}"
             rm -f "$FILE_NAME"; sleep 2; return
         fi
         echo -e "${G}[*] Verifying checksum (SHA-256)...${N}"; sleep 0.8
@@ -259,7 +266,6 @@ run_tool() {
     # --- BOOT SEQUENCE BERDASARKAN ROOT / NON ROOT ---
     BOOT_LOGS=()
     if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
-        # Log buat PC / Root
         BOOT_LOGS+=(
             "[    0.000000] BXP Core Engine loaded successfully."
             "[    0.012000] Root access granted. Privilege escalation active."
@@ -290,7 +296,6 @@ run_tool() {
             "[    0.856000] $TOOL_NAME is now fully operational."
         )
     else
-        # Log buat HP / Non-Root
         BOOT_LOGS+=(
             "[    0.000000] BXP Core Engine loaded (User-space)."
             "[    0.015000] Android Sandbox detected."
