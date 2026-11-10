@@ -7,7 +7,7 @@
 # ============================================
 
 VERSION="2.0"
-MODULE_URL="https://rounds-tenant-silver-birth.trycloudflare.com" # <--- GANTI INI
+MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"" # <--- GANTI INI
 source ./bxp_core.sh
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
