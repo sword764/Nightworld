@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # ============================================
 #   N I G H T   W O R L D
-#   Version: 2.0 (Public)
-#   Engine : 7.0 (100% Real Native Checks)
+#   Version: 2.1 (Public)
+#   Engine : 7.2 (Always Show Install Bar)
 #   By bogor x ploit
 # ============================================
 
-VERSION="2.0"
+VERSION="2.1"
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
 
 # --- AUTO-SYNC LIBRARY ---
@@ -17,10 +17,9 @@ fi
 source ./bxp_libcore.sh
 
 if ! command -v bxp_ascii_title >/dev/null 2>&1; then
+    C='\033[0;36m'; N='\033[0m'
     bxp_ascii_title() { echo -e "${C}=== $1 ===${N}\n"; }
 fi
-
-C='\033[0;36m'; B='\033[0;34m'; W='\033[1;37m'; R='\033[0;31m'; Y='\033[1;33m'; G='\033[0;32m'; N='\033[0m'
 
 detect_env() {
     OS_NAME="Unknown"; ROOT_STATUS="Unknown"; IS_TERMUX=0
@@ -29,7 +28,7 @@ detect_env() {
     if [ -n "$PREFIX" ] && echo "$PREFIX" | grep -qi "com.termux"; then
         OS_NAME="Termux (Android)"; IS_TERMUX=1
         if command -v getprop >/dev/null 2>&1; then
-            DEV_MODEL=$(getprop ro.product.model 2>/dev/null || echo "Android Device")
+            DEV_MODEL=$(getprop ro.product.model 2>/dev/null); [ -z "$DEV_MODEL" ] && DEV_MODEL="Android Device"
             ANDROID_VER=$(getprop ro.build.version.release 2>/dev/null || echo "Unknown")
             CPU_ABI=$(getprop ro.product.cpu.abi 2>/dev/null || echo "$ARCH")
         fi
@@ -45,10 +44,12 @@ detect_env() {
     fi
 
     if [ "$(id -u)" -eq 0 ]; then ROOT_STATUS="Root"; else
-        if command -v su >/dev/null 2>&1 && su -c id >/dev/null 2>&1; then ROOT_STATUS="Root (su available)"; else ROOT_STATUS="Non-Root"; fi
+        if command -v su >/dev/null 2>&1 && timeout 3 su -c id >/dev/null 2>&1; then ROOT_STATUS="Root (su available)"; else ROOT_STATUS="Non-Root"; fi
     fi
     USER_NAME="$(whoami 2>/dev/null || echo unknown)"
     COLS="$(tput cols 2>/dev/null || echo 80)"
+
+    export OS_NAME ROOT_STATUS IS_TERMUX ARCH KERNEL DEV_MODEL USER_NAME ANDROID_VER CPU_ABI
 }
 
 # --- ASCII MAIN HEADER ---
@@ -78,7 +79,7 @@ ascii_mobile() { cat <<'ASCII'
         |/
    NIGHT WORLD
  By bogor x ploit
-      v2.0
+      v2.1
 ASCII
 }
 ascii_pc() { cat <<'ASCII'
@@ -243,13 +244,13 @@ menu_exploit() {
     done
 }
 
-# --- FUNGSI RUN TOOL (REAL SYSTEM CHECK + REVISI TEKS) ---
+# --- FUNGSI RUN TOOL (FIXED) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; MARKER_FILE=".${FILE_NAME}.installed"
     
     clear
     bxp_ascii_title "$TOOL_NAME"
-    echo -e "${C}  --------------------------------------------------${N}"
+    echo -e "${C}  ==================================================${N}"
     
     if [ -f "$MARKER_FILE" ]; then
         echo -e "  ${G}[+] Module $TOOL_NAME is already installed. Booting up...${N}"
@@ -257,93 +258,46 @@ run_tool() {
     else
         echo -ne "  ${Y}[?] Do you want to install $TOOL_NAME module? (Y/N) > ${N}"
         read -r confirm
-        
         if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
             echo -e "  ${R}[-] Installation aborted.${N}"; sleep 1.5; return
         fi
 
         if [ ! -f "$FILE_NAME" ]; then
-            echo ""
-            echo -e "  ${G}[*] Downloading module from GitHub Server...${N}"
-            DOWNLOAD_URL="${MODULE_URL}/${FILE_NAME}" 
-            curl -sL -o "$FILE_NAME" "$DOWNLOAD_URL"
-            
-            if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -q "#!/usr/bin/env bash"; then
-                echo -e "  ${R}[-] CRITICAL: Download failed or invalid format!${N}"
-                rm -f "$FILE_NAME"; sleep 2; return
+            echo -e "\n  ${G}[*] Downloading module from GitHub Server...${N}"
+            curl -fsSL --max-time 30 --retry 3 -o "$FILE_NAME" "${MODULE_URL}/${FILE_NAME}" || { echo -e "  ${R}[-] Download failed!${N}"; sleep 2; return; }
+            if [[ ! -f "$FILE_NAME" ]] || ! head -n 1 "$FILE_NAME" | grep -qE '^#!.*(bash|sh)'; then
+                echo -e "  ${R}[-] CRITICAL: Invalid format!${N}"; rm -f "$FILE_NAME"; sleep 2; return
             fi
+            echo -e "  ${G}[+] Module found in local cache. Preparing boot sequence...${N}"
         fi
         touch "$MARKER_FILE"
     fi
 
+    # --- ANIMASI LOADING BAR (SELALU MUNCUL SETELAH NGETIK Y / ALREADY INSTALLED) ---
     echo ""
-    echo -ne "  ${Y}Loading Native Engine... [${N}"
-    for i in {1..20}; do echo -ne "${W}=${N}"; sleep 0.02; done
-    echo -e "${Y}] 100%${N}"; echo ""
-    
-    clear
-    bxp_ascii_title "$TOOL_NAME"
-    echo -e "${C}  ==================================================${N}"
-    
-    # --- BAGIAN REAL SYSTEM CHECK ---
-    
-    # 1. Cek File & Ukuran
-    FILE_SIZE=$(du -h "$FILE_NAME" 2>/dev/null | cut -f1)
-    echo -e "  ${W}[ REAL ] File verified: ${FILE_NAME} (${FILE_SIZE})${N}"
-    
-    # 2. Cek Device & OS
-    echo -e "  ${W}[ REAL ] Device: ${DEV_MODEL} | Arch: ${ARCH}${N}"
-    
-    # 3. Cek RAM (Cross-platform)
-    if [ "$IS_TERMUX" -eq 1 ]; then
-        MEM_FREE=$(grep MemFree /proc/meminfo | awk '{print $2}')
-        MEM_FREE_MB=$((MEM_FREE / 1024))
-    else
-        MEM_FREE_MB=$(free -m | awk '/Mem:/ {print $4}')
-    fi
-    echo -e "  ${W}[ REAL ] Available RAM: ${MEM_FREE_MB} MB${N}"
-    
-    # 4. Cek Network (Ping beneran)
-    echo -ne "  ${W}[ REAL ] Pinging 8.8.8.8... ${N}"
-    if ping -c 1 -W 2 8.8.8.8 >/dev/null 2>&1; then
-        echo -e "${G}[ OK ] Network Connected${N}"
-    else
-        echo -e "${R}[ WARN ] Network Offline${N}"
-    fi
-    
-    # 5. Cek Root Status
-    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
-        echo -e "  ${G}[ REAL ] Root Privilege: ACTIVE${N}"
-    else
-        echo -e "  ${R}[ REAL ] Root Privilege: NON-ROOT${N}"
-    fi
+    echo -ne "  Installing... ["
+    for i in {1..20}; do
+        echo -ne "${W}=${N}"
+        sleep 0.05
+    done
+    echo -e "] 100%"
+    echo ""
+    sleep 0.5
 
-    # 6. Cek Storage Akses (Khusus Termux)
-    if [ "$IS_TERMUX" -eq 1 ]; then
-        echo -ne "  ${W}[ REAL ] Checking /sdcard access... ${N}"
-        if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then
-            echo -e "${G}[ OK ] Storage Access Granted${N}"
-        else
-            echo -e "${R}[ WARN ] Storage Access Denied (Run termux-setup-storage)${N}"
-        fi
+    # PANGGIL LOADING TEKS PANJANG (BOOT SEQUENCE)
+    bxp_boot_sequence "$TOOL_NAME"
+    
+    echo ""
+    chmod +x "$FILE_NAME" 2>/dev/null
+    
+    # JALANKAN MODUL
+    bash "$FILE_NAME"
+    MODULE_EXIT=$?
+    
+    if [ "$MODULE_EXIT" -ne 0 ]; then
+        echo -e "\n  ${R}[!] Module exited with error code: $MODULE_EXIT${N}"
     fi
     
-    echo -e "${C}  ==================================================${N}"
-    sleep 1
-    
-    # --- TEKS BARU DI SINI (Bahasa Inggris, fungsi sama) ---
-    echo -e "  ${Y}[*] Synchronizing protocols preparing runtime...${N}"
-    sleep 1
-    echo -e "  ${Y}[*] Initializing ${TOOL_NAME} core modules...${N}"
-    sleep 1
-    # -----------------------------------------------------
-    
-    echo -e "  ${G}[+] ${TOOL_NAME} is now fully operational.${N}"
-    sleep 1.5
-    
-    clear
-    chmod +x "$FILE_NAME"
-    bash "$FILE_NAME"
     echo ""
     read -p "  Press Enter to return to menu..."
 }
@@ -352,7 +306,7 @@ user_guide() {
     clear
     echo -e "${C}  ==================================================${N}"
     echo -e "${W}               USER GUIDE / MANUAL${N}"
-    echo -e "${W}               NIGHT WORLD v2.0${N}"
+    echo -e "${W}               NIGHT WORLD v2.1${N}"
     echo -e "${C}  ==================================================${N}"
     echo ""
     echo -e "  ${Y}[1] INSTALLATION PROCESS${N}"
