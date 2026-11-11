@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # ============================================
 #   EXHUME DISGUISE - Hidden SSID Scanner
-#   Night World Module v1.0
+#   Fixed Parser & Better UI
 # ============================================
 
 if [ -f "./bxp_libcore.sh" ]; then
@@ -24,8 +24,7 @@ main_menu() {
     echo -e "${C}  ==================================================${N}"
     echo ""
 
-    echo -e "  ${G}[1]${N} Scan Hidden SSID (Native Termux)"
-    echo -e "  ${G}[2]${N} Sniff Probe Requests (Requires Root)"
+    echo -e "  ${G}[1]${N} Scan Wi-Fi Networks"
     echo -e "  ${R}[0]${N} Back to Main Menu"
     echo ""
     echo -e "${C}  --------------------------------------------------${N}"
@@ -35,7 +34,6 @@ main_menu() {
 
     case "$opt" in
         1) scan_hidden ;;
-        2) sniff_probe ;;
         0) exit 0 ;;
         *) echo -e "  ${R}[!] Invalid option.${N}"; sleep 1; main_menu ;;
     esac
@@ -47,43 +45,57 @@ scan_hidden() {
     echo -e "  ${G}[*] Initializing Wi-Fi scanner...${N}"
     sleep 1
     
-    if command -v termux-wifi-scaninfo >/dev/null 2>&1; then
-        echo -e "  ${G}[*] Scanning for networks...${N}"
-        sleep 2
-        
-        echo -e "\n  ${W}--- SCAN RESULTS ---${N}"
-        echo -e "  ${G}[+] Active networks found. Checking for hidden SSIDs...${N}"
-        echo -e "  ${Y}[!] Note: Real-time parsing requires JSON parsing tool (jq).${N}"
-        echo -e "  ${C}[*] (Placeholder for actual SSID output)${N}"
-        echo -e "  ${C}[*] Hidden networks usually show blank SSID or <unknown>.${N}"
-    else
-        echo -e "\n  ${R}[!] termux-api is not installed.${N}"
+    # REAL CHECK: termux-api & jq
+    if ! command -v termux-wifi-scaninfo >/dev/null 2>&1; then
+        echo -e "\n  ${R}[!] termux-api is NOT installed.${N}"
         echo -e "  ${Y}[*] Run: pkg install termux-api${N}"
+        echo -e "  ${Y}[*] Make sure Termux:API app is installed from F-Droid.${N}"
+        read -p "  Press Enter to return..."
+        main_menu
     fi
-    
-    echo ""
-    read -p "  Press Enter to return..."
-    main_menu
-}
 
-sniff_probe() {
-    clear
-    bxp_ascii_title "$TOOL_NAME"
-    echo -e "  ${G}[*] Checking monitor mode capability...${N}"
-    sleep 1
-    
-    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
-        if command -v iw >/dev/null 2>&1; then
-            echo -e "  ${G}[+] Root access granted. Monitor mode available.${N}"
-            echo -e "  ${Y}[*] (Placeholder: Start probe request sniffer here)${N}"
-        else
-            echo -e "  ${R}[!] 'iw' package not found.${N}"
-        fi
-    else
-        echo -e "  ${R}[!] Monitor mode requires root privileges.${N}"
-        echo -e "  ${Y}[*] Current access: ${ROOT_STATUS}${N}"
+    if ! command -v jq >/dev/null 2>&1; then
+        echo -e "\n  ${R}[!] 'jq' is NOT installed.${N}"
+        echo -e "  ${Y}[*] Run: pkg install jq${N}"
+        read -p "  Press Enter to return..."
+        main_menu
     fi
+
+    echo -e "  ${G}[*] Scanning nearby networks (Real-time)...${N}"
+    RAW_SCAN=$(termux-wifi-scaninfo 2>/dev/null)
     
+    # Validasi jika kosong atau bukan JSON
+    if [ -z "$RAW_SCAN" ] || [ "$RAW_SCAN" = "[]" ] || [ "$RAW_SCAN" = "{}" ]; then
+        echo -e "\n  ${R}[!] No networks found, or Wi-Fi is turned off.${N}"
+        echo -e "  ${Y}[*] Make sure Location (GPS) is ON and permission granted.${N}"
+        read -p "  Press Enter to return..."
+        main_menu
+    fi
+
+    echo -e "  ${G}[+] Scan complete. Parsing results...${N}"
+    sleep 1
+    echo ""
+    echo -e "  ${W}--- SCAN RESULTS ---${N}"
+    echo -e "  ${C}--------------------------------------------------------${N}"
+    printf "  \033[1;37m%-20s | %-18s | %-6s\033[0m\n" "SSID" "BSSID" "SIGNAL"
+    echo -e "  ${C}--------------------------------------------------------${N}"
+
+    # FIXED PARSER: Deteksi format Array ([]) atau Object ({})
+    echo "$RAW_SCAN" | jq -r '
+        (if type == "array" then .[] else . end) | 
+        "\(if .SSID == null or .SSID == "" then "<Hidden SSID>" else .SSID end)\t| \(.BSSID)\t| \(.RSSI // .level // "N/A")"
+    ' 2>/dev/null | while IFS= read -r line; do
+        SSID=$(echo "$line" | cut -f1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+        REST=$(echo "$line" | cut -f2-)
+        
+        if [ "$SSID" = "<Hidden SSID>" ]; then
+            printf "  \033[0;31m%-20s\033[0m | %s\n" "$SSID" "$REST"
+        else
+            printf "  \033[0;32m%-20s\033[0m | %s\n" "$SSID" "$REST"
+        fi
+    done
+
+    echo -e "  ${C}--------------------------------------------------------${N}"
     echo ""
     read -p "  Press Enter to return..."
     main_menu
