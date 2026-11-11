@@ -2,7 +2,7 @@
 # ============================================
 #   N I G H T   W O R L D
 #   Version: 2.0 (Public)
-#   Engine : 6.0 (Smart Installer & UI Polish)
+#   Engine : 7.0 (100% Real Native Checks)
 #   By bogor x ploit
 # ============================================
 
@@ -53,16 +53,16 @@ detect_env() {
 
 # --- ASCII MAIN HEADER ---
 ascii_mobile() { cat <<'ASCII'
-         /\
-        /  \
-       |    |
-       | || |
-       | || |
-       | || |
-    ___|_||_|___
-   \   ||     /
-    \  ||    /
-     \_||__ /
+        /\
+       /  \
+      |    |
+      | || |
+      | || |
+      | || |
+   ___|_||_|___
+   \    ||     /
+    \   ||    /
+     \__||__ /
         ||
         ||
      .--||--.
@@ -73,10 +73,9 @@ ascii_mobile() { cat <<'ASCII'
    |\  _||_  /|
     \  '||'  /
      '. || .'
-       ||
-       ||
-       ||
-       |/
+        ||
+        ||
+        |/
    NIGHT WORLD
  By bogor x ploit
       v2.0
@@ -154,7 +153,6 @@ show_menu() {
     echo -e "${C}  ==================================================${N}"
 }
 
-# --- Menu Lainnya (Ukuran & Spasi Disamain) ---
 menu_kill_chain() {
     while true; do
         clear
@@ -245,7 +243,7 @@ menu_exploit() {
     done
 }
 
-# --- FUNGSI RUN TOOL (SMART INSTALLER) ---
+# --- FUNGSI RUN TOOL (REAL SYSTEM CHECK + REVISI TEKS) ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; MARKER_FILE=".${FILE_NAME}.installed"
     
@@ -253,7 +251,6 @@ run_tool() {
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}  --------------------------------------------------${N}"
     
-    # Cek Marker
     if [ -f "$MARKER_FILE" ]; then
         echo -e "  ${G}[+] Module $TOOL_NAME is already installed. Booting up...${N}"
         sleep 1
@@ -275,70 +272,75 @@ run_tool() {
                 echo -e "  ${R}[-] CRITICAL: Download failed or invalid format!${N}"
                 rm -f "$FILE_NAME"; sleep 2; return
             fi
-            echo -e "  ${G}[*] Verifying checksum...${N}"; sleep 0.8
         fi
-        
         touch "$MARKER_FILE"
     fi
 
-    # Animasi Loading
     echo ""
-    echo -ne "  ${Y}Installing... [${N}"
-    for i in {1..30}; do echo -ne "${W}=${N}"; sleep 0.05; done
+    echo -ne "  ${Y}Loading Native Engine... [${N}"
+    for i in {1..20}; do echo -ne "${W}=${N}"; sleep 0.02; done
     echo -e "${Y}] 100%${N}"; echo ""
     
-    # Boot Sequence
     clear
     bxp_ascii_title "$TOOL_NAME"
     echo -e "${C}  ==================================================${N}"
     
-    BOOT_LOGS=()
-    BOOT_LOGS+=(
-        "[    0.000000] Initializing BXP Core Engine..."
-        "[    0.005000] Fetching manifest from GitHub..."
-        "[    0.012000] [ OK ] Manifest verified."
-        "[    0.018000] Loading payload: ${FILE_NAME}..."
-        "[    0.025000] [ OK ] ${FILE_NAME} loaded."
-        "[    0.032000] Extracting library: bxp_libcore.sh..."
-        "[    0.045000] [ OK ] Library extracted."
-    )
-
+    # --- BAGIAN REAL SYSTEM CHECK ---
+    
+    # 1. Cek File & Ukuran
+    FILE_SIZE=$(du -h "$FILE_NAME" 2>/dev/null | cut -f1)
+    echo -e "  ${W}[ REAL ] File verified: ${FILE_NAME} (${FILE_SIZE})${N}"
+    
+    # 2. Cek Device & OS
+    echo -e "  ${W}[ REAL ] Device: ${DEV_MODEL} | Arch: ${ARCH}${N}"
+    
+    # 3. Cek RAM (Cross-platform)
     if [ "$IS_TERMUX" -eq 1 ]; then
-        BOOT_LOGS+=(
-            "[    0.060000] Device Detected: ${DEV_MODEL} (Android)"
-            "[    0.089000] Mounting local storage..."
-            "[    0.120000] [ OK ] Storage mapped."
-            "[    0.156000] Bypassing Termux restrictions..."
-            "[    0.189000] [ OK ] Bypass successful."
-            "[    0.278000] Establishing encrypted C2 tunnel..."
-            "[    0.312000] [ OK ] Tunnel active."
-            "[    0.345000] Injecting ${TOOL_NAME} payload..."
-            "[    0.389000] [ OK ] Injection successful."
-            "[    0.556000] Hiding app icon from launcher..."
-            "[    0.589000] [ OK ] Icon hidden."
-            "[    0.812000] ${TOOL_NAME} is now fully operational."
-        )
+        MEM_FREE=$(grep MemFree /proc/meminfo | awk '{print $2}')
+        MEM_FREE_MB=$((MEM_FREE / 1024))
     else
-        BOOT_LOGS+=(
-            "[    0.060000] Device Detected: ${DEV_MODEL} (Linux)"
-            "[    0.089000] Root access granted."
-            "[    0.120000] Mounting system partitions..."
-            "[    0.156000] [ OK ] Partitions mounted."
-            "[    0.278000] Bypassing local firewall..."
-            "[    0.312000] [ OK ] Firewall flushed."
-            "[    0.345000] Injecting ${TOOL_NAME} payload..."
-            "[    0.389000] [ OK ] Injection successful."
-            "[    0.812000] ${TOOL_NAME} is now fully operational."
-        )
+        MEM_FREE_MB=$(free -m | awk '/Mem:/ {print $4}')
+    fi
+    echo -e "  ${W}[ REAL ] Available RAM: ${MEM_FREE_MB} MB${N}"
+    
+    # 4. Cek Network (Ping beneran)
+    echo -ne "  ${W}[ REAL ] Pinging 8.8.8.8... ${N}"
+    if ping -c 1 -W 2 8.8.8.8 >/dev/null 2>&1; then
+        echo -e "${G}[ OK ] Network Connected${N}"
+    else
+        echo -e "${R}[ WARN ] Network Offline${N}"
+    fi
+    
+    # 5. Cek Root Status
+    if [ "$ROOT_STATUS" = "Root" ] || [ "$ROOT_STATUS" = "Root (su available)" ]; then
+        echo -e "  ${G}[ REAL ] Root Privilege: ACTIVE${N}"
+    else
+        echo -e "  ${R}[ REAL ] Root Privilege: NON-ROOT${N}"
     fi
 
-    for log in "${BOOT_LOGS[@]}"; do
-        echo -e "  ${W}$log${N}"; sleep 0.3
-    done
+    # 6. Cek Storage Akses (Khusus Termux)
+    if [ "$IS_TERMUX" -eq 1 ]; then
+        echo -ne "  ${W}[ REAL ] Checking /sdcard access... ${N}"
+        if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then
+            echo -e "${G}[ OK ] Storage Access Granted${N}"
+        else
+            echo -e "${R}[ WARN ] Storage Access Denied (Run termux-setup-storage)${N}"
+        fi
+    fi
     
     echo -e "${C}  ==================================================${N}"
-    echo -e "  ${G}[+] Tools complete 100%. Entering $TOOL_NAME...${N}"
+    sleep 1
+    
+    # --- TEKS BARU DI SINI (Bahasa Inggris, fungsi sama) ---
+    echo -e "  ${Y}[*] Synchronizing protocols preparing runtime...${N}"
+    sleep 1
+    echo -e "  ${Y}[*] Initializing ${TOOL_NAME} core modules...${N}"
+    sleep 1
+    # -----------------------------------------------------
+    
+    echo -e "  ${G}[+] ${TOOL_NAME} is now fully operational.${N}"
     sleep 1.5
+    
     clear
     chmod +x "$FILE_NAME"
     bash "$FILE_NAME"
