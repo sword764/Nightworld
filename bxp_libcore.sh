@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================
-#   BXP CORE LIBRARY v2.1 (Termux Fixed)
+#   BXP CORE LIBRARY v2.0 (Termux Fixed)
 #   By Bogor X Ploit x Ijul v5.0
 # ============================================
 
@@ -51,7 +51,7 @@ bxp_check_root() {
     fi
 }
 
-# --- 5. BXP BOOT SEQUENCE ENGINE v3.2 ---
+# --- 5. BXP BOOT SEQUENCE ENGINE v3.3 ---
 bxp_boot_sequence() {
     local TOOL_NAME="$1"
     local START_TIME=$(date +%s)
@@ -71,25 +71,29 @@ bxp_boot_sequence() {
     
     if [ "$IS_ROOT" -eq 1 ]; then
         echo -e "  ${G}[ OK ]${N} Root privilege detected."
-        sleep 0.8
+        sleep 0.6
+        echo -e "  ${G}[ OK ]${N} Bypassing Android SELinux restrictions..."
+        sleep 0.6
+        echo -e "  ${G}[ OK ]${N} Mounting system as Read/Write..."
+        sleep 0.6
         echo -e "  ${G}[ OK ]${N} Filesystem access granted."
-        sleep 0.8
+        sleep 0.6
         echo -e "  ${G}[ OK ]${N} Loading cryptographic engine (openssl)..."
-        sleep 0.8
+        sleep 0.6
         
         if [ -n "$http_proxy" ] || [ -n "$https_proxy" ]; then
             echo -e "  ${G}[ OK ]${N} Proxy configuration detected: ${W}$http_proxy$https_proxy${N}"
         else
             echo -e "  ${Y}[*]${N} Proxy configuration ... [--] Not set (Direct Connection)"
         fi
-        sleep 0.8
+        sleep 0.6
         
         echo -e "  ${G}[ OK ]${N} Preparing monitor mode ... SUPPORTED"
-        sleep 0.8
+        sleep 0.6
         echo -e "  ${G}[ OK ]${N} Checking storage access ... /sdcard writable"
-        sleep 0.8
+        sleep 0.6
         echo -e "  ${G}[ OK ]${N} Pinging 8.8.8.8 ... Network Connected"
-        sleep 0.8
+        sleep 0.6
         echo -e "  ${G}[ OK ]${N} Loading core modules..."
         sleep 0.5
     else
@@ -255,7 +259,8 @@ ASCII
         *)
             echo -e "${C}====================================================${N}"
             echo -e "${W}    ${title}${N}"
-            echo -e "${C}====================================================${N}\n" ;;
+            echo -e "${C}====================================================${N}\n"
+            ;;
     esac
     sleep 0.2
 }

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # ============================================
 #   N I G H T   W O R L D
-#   Version: 2.1 (Public)
-#   Engine : 7.2 (Always Show Install Bar)
+#   Version: 2.0 (Public)
+#   Engine : 7.3 (Standardized Boot Sequence)
 #   By bogor x ploit
 # ============================================
 
-VERSION="2.1"
+VERSION="2.0"
 MODULE_URL="https://raw.githubusercontent.com/sword764/Nightworld/main"
 
 # --- AUTO-SYNC LIBRARY ---
@@ -79,7 +79,7 @@ ascii_mobile() { cat <<'ASCII'
         |/
    NIGHT WORLD
  By bogor x ploit
-      v2.1
+      v2.0
 ASCII
 }
 ascii_pc() { cat <<'ASCII'
@@ -244,7 +244,7 @@ menu_exploit() {
     done
 }
 
-# --- FUNGSI RUN TOOL (FIXED) ---
+# --- FUNGSI RUN TOOL ---
 run_tool() {
     TOOL_NAME="$1"; FILE_NAME="$2"; MARKER_FILE=".${FILE_NAME}.installed"
     
@@ -273,7 +273,7 @@ run_tool() {
         touch "$MARKER_FILE"
     fi
 
-    # --- ANIMASI LOADING BAR (SELALU MUNCUL SETELAH NGETIK Y / ALREADY INSTALLED) ---
+    # --- ANIMASI LOADING BAR (SELALU MUNCUL) ---
     echo ""
     echo -ne "  Installing... ["
     for i in {1..20}; do
@@ -306,7 +306,7 @@ user_guide() {
     clear
     echo -e "${C}  ==================================================${N}"
     echo -e "${W}               USER GUIDE / MANUAL${N}"
-    echo -e "${W}               NIGHT WORLD v2.1${N}"
+    echo -e "${W}               NIGHT WORLD v2.0${N}"
     echo -e "${C}  ==================================================${N}"
     echo ""
     echo -e "  ${Y}[1] INSTALLATION PROCESS${N}"
