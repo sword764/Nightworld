@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ============================================
-#   BXP CORE LIBRARY v2.0 (Clean & Animated)
+#   BXP CORE LIBRARY v2.2 (Smart Device Adaptive)
 #   By Bogor X Ploit x Ijul v5.0
 # ============================================
 
@@ -51,7 +51,7 @@ bxp_check_root() {
     fi
 }
 
-# --- 5. BXP BOOT SEQUENCE ENGINE (CLEAN TEXT, REAL EXECUTION) ---
+# --- 5. BXP BOOT SEQUENCE ENGINE (SMART ADAPTIVE CHECK) ---
 bxp_boot_sequence() {
     local TOOL_NAME="$1"
     local START_TIME=$(date +%s%3N)
@@ -59,7 +59,9 @@ bxp_boot_sequence() {
     local ENV_TYPE="Unknown"
     
     if [ "$(id -u)" -eq 0 ]; then IS_ROOT=1
-    elif command -v su >/dev/null 2>&1 && timeout 3 su -c id >/dev/null 2>&1; then IS_ROOT=1; fi
+    elif command -v su >/dev/null 2>&1 && timeout 3 su -c id >/dev/null 2>&1; then IS_ROOT=1
+    elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then IS_ROOT=1; fi
+    
     if [ -n "$PREFIX" ] && echo "$PREFIX" | grep -qi "com.termux"; then ENV_TYPE="Termux"; else ENV_TYPE="PC"; fi
     
     bxp_step_sleep() { sleep 0.3; }
@@ -79,33 +81,19 @@ bxp_boot_sequence() {
     fi
 
     if [ "$IS_ROOT" -eq 1 ]; then
-        echo -ne "  ${Y}[*] Querying SELinux status...${N}"
-        bxp_step_sleep
-        if command -v getenforce >/dev/null 2>&1 && [ "$(getenforce)" = "Enforcing" ]; then
-            echo -e " ${Y}[ WARN ] Enforcing${N}"
+        if [ "$ENV_TYPE" = "Termux" ]; then
+            echo -ne "  ${Y}[*] Querying SELinux status...${N}"
+            bxp_step_sleep
+            if command -v getenforce >/dev/null 2>&1 && [ "$(getenforce)" = "Enforcing" ]; then echo -e " ${Y}[ WARN ] Enforcing${N}"; else echo -e " ${G}[ OK ] Permissive/Disabled${N}"; fi
         else
-            echo -e " ${G}[ OK ] Permissive/Disabled${N}"
-        fi
-        
-        echo -ne "  ${Y}[*] Inspecting system partition...${N}"
-        bxp_step_sleep
-        if mount | grep -q " /system "; then
-            if mount | grep " /system " | grep -q "rw"; then echo -e " ${G}[ OK ] Read/Write${N}"; else echo -e " ${Y}[ WARN ] Read-Only${N}"; fi
-        else
-            echo -e " ${R}[ FAIL ] /system not found${N}"
+            echo -ne "  ${Y}[*] Checking System Firewall...${N}"
+            bxp_step_sleep
+            if command -v ufw >/dev/null 2>&1; then echo -e " ${G}[ OK ] UFW Detected${N}"; else echo -e " ${Y}[ WARN ] No UFW Found${N}"; fi
         fi
     else
         echo -ne "  ${Y}[*] Checking monitor mode capability...${N}"
         bxp_step_sleep
         if command -v iw >/dev/null 2>&1 && iw dev 2>/dev/null | grep -q "monitor"; then echo -e " ${G}[ OK ] Supported${N}"; else echo -e " ${R}[ FAIL ] Not Supported${N}"; fi
-        
-        echo -ne "  ${Y}[*] Checking packet injection...${N}"
-        bxp_step_sleep
-        if command -v aireplay-ng >/dev/null 2>&1; then echo -e " ${G}[ OK ] Supported${N}"; else echo -e " ${R}[ FAIL ] Not Supported${N}"; fi
-        
-        echo -ne "  ${Y}[*] Querying CPU architecture...${N}"
-        bxp_step_sleep
-        echo -e " ${G}[ OK ] ${N}$(uname -m)"
     fi
 
     echo -ne "  ${Y}[*] Loading cryptographic engine...${N}"
@@ -118,15 +106,10 @@ bxp_boot_sequence() {
 
     echo -ne "  ${Y}[*] Verifying storage permissions...${N}"
     bxp_step_sleep
-    if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then
-        if [ "$ENV_TYPE" = "Termux" ]; then
-            FILE_COUNT=$(ls -1 /sdcard 2>/dev/null | wc -l)
-            echo -e " ${G}[ OK ] ${FILE_COUNT} items found${N}"
-        else
-            echo -e " ${G}[ OK ] Root fs accessible${N}"
-        fi
+    if [ "$ENV_TYPE" = "Termux" ]; then
+        if [ -d "/sdcard" ] && [ -r "/sdcard" ]; then echo -e " ${G}[ OK ] /sdcard writable${N}"; else echo -e " ${R}[ DENIED ] Run termux-setup-storage${N}"; fi
     else
-        echo -e " ${R}[ DENIED ] Run termux-setup-storage${N}"
+        if [ -w "$HOME" ]; then echo -e " ${G}[ OK ] Home directory writable${N}"; else echo -e " ${R}[ DENIED ] No write access${N}"; fi
     fi
 
     echo -ne "  ${Y}[*] Allocating memory for ${TOOL_NAME}...${N}"
@@ -136,7 +119,7 @@ bxp_boot_sequence() {
         MEM_MB=$((MEM_AVAIL / 1024))
         echo -e " ${G}[ OK ] ${MEM_MB} MB Available${N}"
     else
-        echo -e " ${R}[ FAIL ] Cannot read memory info${N}"
+        echo -e " ${Y}[ WARN ] Cannot read memory info${N}"
     fi
 
     echo -ne "  ${Y}[*] Pinging 8.8.8.8 ...${N}"
@@ -155,12 +138,6 @@ bxp_boot_sequence() {
     PROC_COUNT=$(ps -A 2>/dev/null | wc -l)
     echo -e " ${G}[ OK ] ${PROC_COUNT} active PIDs${N}"
 
-    if [ -f "$TOOL_NAME.sh" ]; then
-        echo -ne "  ${Y}[*] Parsing module syntax...${N}"
-        bxp_step_sleep
-        if bash -n "$TOOL_NAME.sh" 2>/dev/null; then echo -e " ${G}[ OK ] Valid${N}"; else echo -e " ${R}[ FAIL ] Syntax Error${N}"; fi
-    fi
-
     local END_TIME=$(date +%s%3N)
     local ELAPSED=$((END_TIME - START_TIME))
     
@@ -169,7 +146,7 @@ bxp_boot_sequence() {
     echo -e "  ${G}[+] Module ready. (${ELAPSED}ms)${N}"
 }
 
-# --- 6. HEADER ASCII ENGINE (FONT ASLI TUAN) ---
+# --- 6. HEADER ASCII ENGINE ---
 bxp_ascii_title() {
     local title="$1"
     clear
